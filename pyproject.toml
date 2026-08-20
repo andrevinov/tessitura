@@ -1,0 +1,17 @@
+[project]
+name = "tessitura"
+version = "0.1.0"
+description = "A deterministic campaign engine for AI-assisted D&D 5.5e: one turn in, canonical state updated, relevant world systems resolved, minimal narrative context out."
+authors = [
+    {name = "André Carvalho",email = "me@andrev.me"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
