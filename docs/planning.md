@@ -29,3 +29,27 @@ A CLI deverá oferecer comandos e subcomandos relacionados a áreas como campanh
 Tessitura também deverá avaliar acontecimentos do mundo e suas consequências. Isso inclui, por exemplo, determinar se um encontro deve ocorrer e quais consequências decorrem do sucesso ou fracasso de uma missão.
 
 Os comandos e subcomandos mencionados aqui são exemplos da direção pretendida. Sua organização definitiva ainda não foi estabelecida.
+
+## Estágios de compromisso narrativo
+
+Uma direção narrativa pode adquirir compromisso com a realidade do jogo progressivamente. Os estágios descritos aqui não são camadas arquiteturais: representam estados conceituais pelos quais uma direção narrativa pode passar.
+
+O **Cânone da História** representa a verdade objetiva completa do mundo: tudo que aconteceu e tudo que está acontecendo, inclusive fatos que o Jogador ainda desconhece. Somente aquilo que se torna real pode alterar o Cânone da História.
+
+### Intenção narrativa
+
+Uma intenção narrativa é uma direção desejada para a história que ainda não entrou em preparação. Ela pode possuir condições que indiquem quando se tornará elegível para preparação, como data, período, local, horário, nível ou condição do personagem.
+
+Uma intenção narrativa não afirma que algo aconteceu nem garante que acontecerá. Enquanto permanecer nesse estágio, ela não altera o Cânone da História.
+
+### Preparação narrativa
+
+Uma preparação narrativa é uma intenção cujas condições de elegibilidade foram suficientemente atendidas para que formas concretas de introduzi-la no mundo comecem a ser avaliadas.
+
+Durante esse estágio, podem ser consideradas oportunidades como uma missão paralela, um deslocamento do personagem ou uma interrupção de intenção. A situação ainda não é real e, por isso, sua preparação não altera por si mesma o Cânone da História.
+
+### Situação em curso
+
+Uma situação em curso surge quando uma preparação é confirmada como apropriada para acontecer e ingressa na realidade do jogo. A partir desse momento, ela interage com o estado do mundo e com as ações do Jogador, sem que seu resultado esteja predeterminado pela intenção que a originou.
+
+As ocorrências e consequências produzidas durante uma situação em curso alteram o estado atual e passam a compor o Cânone da História. Quando a situação deixa de estar em curso, os fatos que ela produziu continuam pertencendo ao cânone.
