@@ -37,3 +37,27 @@
 **Estado do Mundo:** condição atual do mundo, produzida pelos Fatos Canônicos acumulados e alterável por novos acontecimentos.
 
 **Intenção de Personagem:** desejo ou objetivo pertencente a um personagem do mundo e, portanto, integrante do Cânone da História, mesmo quando desconhecido pelo Jogador. Pode originar uma Intenção Narrativa por meio de uma Âncora Narrativa.
+
+**Critério de Elegibilidade:** condição estruturada que pode ser avaliada pelo Tessitura para determinar se uma Intenção Narrativa está apta a produzir Preparações Narrativas.
+
+**Avaliação de Elegibilidade:** operação pura, determinística e idempotente para os mesmos dados que aplica os Critérios de Elegibilidade ao Cânone da História e ao estado atual da Intenção Narrativa. Seu resultado não cria Preparações Narrativas nem exige participação ou justificativa do Narrador.
+
+**Intenção Elegível:** Intenção Narrativa cuja Avaliação de Elegibilidade determinou que ela está apta a produzir Preparações Narrativas.
+
+**Requisito Rígido:** condição de uma Preparação Narrativa que decorre do Cânone da História, de suas Âncoras Narrativas ou de outra restrição que não pode ser adaptada discricionariamente.
+
+**Requisito Maleável:** condição de uma Preparação Narrativa que expressa uma forma preferida, mas pode ser adaptada pelo Narrador sem romper suas Âncoras Narrativas nem contradizer o Cânone da História.
+
+**Evidência de Oportunidade:** informação selecionada pelo Tessitura a partir do Cânone da História e do Estado do Mundo para indicar a compatibilidade entre uma Preparação Narrativa e o contexto atual.
+
+**Oportunidade Narrativa:** compatibilidade contextual que permite considerar uma Preparação Narrativa no momento atual, inclusive mediante adaptação de seus Requisitos Maleáveis.
+
+**Avaliação de Oportunidade:** avaliação conduzida pelo Narrador, com apoio das Evidências de Oportunidade reunidas pelo Tessitura, para decidir se uma Preparação Narrativa pode ser aproveitada, rejeitada ou adaptada no contexto atual.
+
+**Avaliação de Materialização:** avaliação híbrida na qual Tessitura identifica Bloqueios de Materialização e outros alertas mecanicamente verificáveis, enquanto o Narrador avalia a adequação narrativa e decide corrigir, descartar ou aprovar a Preparação Narrativa.
+
+**Bloqueio de Materialização:** condição que impede uma Preparação Narrativa de ingressar na realidade enquanto não for resolvida. Quando o bloqueio resultar da discricionariedade do Narrador, sua decisão exige uma Justificativa do Narrador.
+
+**Materialização:** operação que, após aprovação, faz uma ou mais Preparações Narrativas ingressarem na realidade como uma Situação. A operação altera o estado do sistema e deve impedir a criação duplicada da mesma Situação.
+
+**Justificativa do Narrador:** campo textual obrigatório, composto por uma ou duas frases, no qual o Narrador explica uma decisão discricionária. É exigida, entre outros momentos, na criação ou adaptação de Preparações Narrativas, nas avaliações em que o Narrador participa e na confirmação de uma Materialização.
