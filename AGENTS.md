@@ -389,6 +389,27 @@ then those are at least **seven separate development steps**.
 
 They MUST NOT be implemented together.
 
+## Explicit User-Authorized Grouping
+
+The one-unit rule is the default development rhythm, not a restriction on the
+user's control of the learning process. The user MAY explicitly request that a
+small, named set of conceptual units be implemented together when they state
+that they can understand and review the combined change.
+
+When the user gives that authorization, the agent MUST respect it and MAY
+implement the named units in the same step. The authorization applies only to
+the exact units identified by the user and MUST NOT be expanded to inferred
+supporting work, unrelated cleanup, tests, documentation, or additional
+abstractions.
+
+For the purposes of the current proposal, implementation scope, and mandatory
+stop, the explicitly authorized group is treated as the current unit of work.
+The agent must still explain the boundaries of the group, verify the result,
+report the changes clearly, and stop after completing it.
+
+Without explicit user authorization to group named units, the one-unit rule
+continues to apply.
+
 ---
 
 # 11. Proposal and Implementation Are Separate Steps
