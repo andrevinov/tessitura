@@ -37,9 +37,53 @@ Nessas avaliações, a responsabilidade do Tessitura é receber os dados e execu
 
 Avaliação inicial e reavaliação representam momentos distintos da mesma atividade.
 
-Como hipótese de apoio ao fluxo, Tessitura poderá sinalizar a necessidade de reavaliação a partir de condições estruturadas, como tempo ficcional decorrido, e fornecer contexto relevante em níveis de aprofundamento sob demanda. Sinalizar uma reavaliação não determinará seu resultado.
+#### Resultado da avaliação
 
-A representação em classes ou mecanismos e o formato dos dados recebidos — valores finais ou variações — permanecem em aberto.
+`NarrativeIntensityAndPressureAssessment` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa o resultado da avaliação, não o mecanismo que a realiza.
+
+O resultado contém valores finais, não variações a somar ou subtrair. Os objetos que o compõem rejeitam intensidade ou pressão negativas e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
+
+#### Resultado vigente na Intenção
+
+`NarrativeIntention` recebe um resultado na construção e o expõe pela propriedade `current_assessment`. As propriedades `intensity` e `pressure` consultam esse resultado, sem manter cópias independentes dos valores.
+
+Uma Intenção pode passar por várias avaliações, mas mantém um único resultado vigente. O método `apply_assessment()` substitui o resultado completo, mantendo intensidade, pressão e justificativa da mesma avaliação juntas. Ele não modifica o resultado anterior nem cria um registro histórico automaticamente.
+
+#### Registro de avaliação
+
+`NarrativeIntensityAndPressureAssessmentRecord` representa uma ocorrência concluída de avaliação. É uma entidade imutável: resultados iguais podem pertencer a ocorrências distintas. Seus campos são:
+
+- `id`: identidade do registro;
+- `intention_id`: identidade da Intenção avaliada;
+- `evaluated_at`: data e hora reais da avaliação, obrigatoriamente com fuso horário, distintas do tempo ficcional da campanha;
+- `trigger`: categoria do disparo;
+- `assessment`: resultado da avaliação, incluindo a justificativa do Narrador.
+
+Vários registros podem se referir à mesma Intenção por `intention_id`. O registro é específico para avaliações de intensidade e pressão; ainda não existe um registro genérico para os outros tipos de avaliação.
+
+Criar um registro não aplica seu resultado à Intenção. Da mesma forma, aplicar um resultado não o registra. Um registro de avaliação, isoladamente, não comprova que seu resultado foi aplicado.
+
+#### Categorias de disparo
+
+O enum `EvaluationTriggerKind` representa as categorias de origem da avaliação:
+
+| Categoria | Significado |
+| --- | --- |
+| `INITIAL_EVALUATION` | Avaliação inicial, que estabelece os primeiros valores. |
+| `TIME_THRESHOLD_REACHED` | Um limite configurado de tempo ficcional foi atingido. |
+| `LEVEL_THRESHOLD_REACHED` | Um limite configurado de nível foi atingido, seja individual ou da soma dos níveis do grupo. |
+| `ANCHOR_STATE_CHANGED` | Mudaram campos relevantes para o motor narrativo no elemento ligado à Âncora Narrativa. |
+| `KNOWLEDGE_CHANGED` | Houve mudança de conhecimento relevante, seja do elemento ligado à Âncora, seja do personagem do Jogador ou de seu grupo. |
+
+Os disparos de reavaliação representam condições determinísticas cuja identificação cabe ao Tessitura, não interpretações do Narrador. Uma mudança de estado relevante significa uma mudança nos campos definidos para acompanhamento, não qualquer alteração no personagem, lugar, item ou outro elemento. Sinalizar uma reavaliação não determina seu resultado.
+
+O enum identifica somente a categoria. Ele não contém a condição concreta, o limite configurado, os campos alterados, quem adquiriu informação ou qual informação foi adquirida.
+
+#### Limites da implementação atual
+
+Existem as representações do resultado, do registro e das categorias de disparo, além da substituição do resultado vigente na Intenção. Ainda não existem monitoramento de condições, agendamento, persistência de histórico ou coordenação automática entre registrar e aplicar uma avaliação.
+
+O fornecimento de contexto em níveis de aprofundamento sob demanda continua sendo uma hipótese de apoio ao fluxo, não um mecanismo implementado.
 
 ### Avaliação de Elegibilidade
 
