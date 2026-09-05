@@ -17,7 +17,7 @@ class NarrativePreparation:
 
         self._id = id
         self._intention = intention
-        self.description = description
+        self._description = description
         self.justification = justification
 
     @property
@@ -27,3 +27,7 @@ class NarrativePreparation:
     @property
     def intention(self) -> NarrativeIntention:
         return self._intention
+
+    @property
+    def description(self) -> str:
+        return self._description

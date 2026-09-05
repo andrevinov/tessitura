@@ -12,11 +12,18 @@ class NarrativeIntention:
         intensity: NarrativeIntensity,
         pressure: NarrativePressure,
     ) -> None:
+        if not direction.strip():
+            raise ValueError("Narrative intention direction cannot be blank")
+
         self._id = id
-        self.direction = direction
+        self._direction = direction
         self.intensity = intensity
         self.pressure = pressure
 
     @property
     def id(self) -> UUID:
         return self._id
+
+    @property
+    def direction(self) -> str:
+        return self._direction

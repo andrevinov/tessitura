@@ -50,3 +50,30 @@ def test_narrative_intention_cannot_change_its_id() -> None:
         intention.id = UUID(int=2)  # pyright: ignore[reportAttributeAccessIssue]
 
     assert intention.id == original_id
+
+
+def test_narrative_intention_rejects_blank_direction() -> None:
+    with pytest.raises(ValueError, match="direction cannot be blank"):
+        NarrativeIntention(
+            id=UUID(int=1),
+            direction="   ",
+            intensity=NarrativeIntensity(2),
+            pressure=NarrativePressure(3),
+        )
+
+
+def test_narrative_intention_cannot_change_its_direction_directly() -> None:
+    original_direction = "Borg seeks revenge"
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction=original_direction,
+        intensity=NarrativeIntensity(2),
+        pressure=NarrativePressure(3),
+    )
+
+    with pytest.raises(AttributeError):
+        intention.direction = (  # pyright: ignore[reportAttributeAccessIssue]
+            "Reveal the corruption beneath the city"
+        )
+
+    assert intention.direction == original_direction

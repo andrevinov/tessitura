@@ -97,3 +97,28 @@ def test_narrative_preparation_cannot_change_its_id() -> None:
         preparation.id = UUID(int=3)  # pyright: ignore[reportAttributeAccessIssue]
 
     assert preparation.id == original_id
+
+
+def test_narrative_preparation_cannot_change_its_description_directly() -> None:
+    original_description = "Borg hires mercenaries"
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction="Borg seeks revenge",
+        intensity=NarrativeIntensity(3),
+        pressure=NarrativePressure(2),
+    )
+    preparation = NarrativePreparation(
+        id=UUID(int=2),
+        intention=intention,
+        description=original_description,
+        justification=NarratorJustification(
+            "This form preserves Borg as the causal origin."
+        ),
+    )
+
+    with pytest.raises(AttributeError):
+        preparation.description = (  # pyright: ignore[reportAttributeAccessIssue]
+            "Borg confronts the group personally"
+        )
+
+    assert preparation.description == original_description
