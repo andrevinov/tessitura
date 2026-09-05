@@ -1,4 +1,4 @@
-# Tessitura: Ideias centrais
+# Guia geral do Tessitura
 
 ## Responsabilidades pretendidas
 
@@ -22,4 +22,4 @@ Sempre que o Narrador criar, adaptar, avaliar, bloquear, descartar ou confirmar 
 
 O motor narrativo é um dos motores previstos para o Tessitura. Ele deverá apoiar a evolução de direções narrativas em possibilidades concretas e sua entrada controlada na realidade da campanha, preservando o Cânone e a liberdade de ação do Jogador. Seu funcionamento combinará operações determinísticas do Tessitura com decisões discricionárias do Narrador, conforme o princípio de mediação.
 
-Os conceitos e as responsabilidades desse motor estão descritos no [modelo de compromisso narrativo](domain/narrative-commitment.md).
+Os conceitos e as responsabilidades desse motor estão descritos no documento do [motor narrativo](domain/narrative-engine.md).

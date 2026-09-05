@@ -1,4 +1,4 @@
-## Vocabulário
+# Linguagem ubíqua
 
 **Tessitura:** aplicação de linha de comando disponibilizada ao Agente Narrador para apoiar a condução de uma campanha de D&D 5.5e para um Jogador.
 

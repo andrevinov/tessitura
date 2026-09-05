@@ -1,4 +1,4 @@
-# Roadmap até a primeira beta
+# Roadmap de desenvolvimento
 
 > Status: hipótese de implementação.
 
