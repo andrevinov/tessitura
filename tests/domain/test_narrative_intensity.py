@@ -14,3 +14,8 @@ def test_narrative_intensity_is_immutable() -> None:
 
     with pytest.raises(FrozenInstanceError):
         intensity.value = 2  # pyright: ignore[reportAttributeAccessIssue]
+
+
+def test_narrative_intensity_rejects_negative_value() -> None:
+    with pytest.raises(ValueError, match="cannot be negative"):
+        NarrativeIntensity(-1)

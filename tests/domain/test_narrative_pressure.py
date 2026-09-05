@@ -14,3 +14,8 @@ def test_narrative_pressure_is_immutable() -> None:
 
     with pytest.raises(FrozenInstanceError):
         pressure.value = 2  # pyright: ignore[reportAttributeAccessIssue]
+
+
+def test_narrative_pressure_rejects_negative_value() -> None:
+    with pytest.raises(ValueError, match="cannot be negative"):
+        NarrativePressure(-1)
