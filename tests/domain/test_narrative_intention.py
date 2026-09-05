@@ -35,3 +35,18 @@ def test_invalid_pressure_does_not_replace_current_intention_pressure() -> None:
         intention.pressure = NarrativePressure(-1)
 
     assert intention.pressure is original_pressure
+
+
+def test_narrative_intention_cannot_change_its_id() -> None:
+    original_id = UUID(int=1)
+    intention = NarrativeIntention(
+        id=original_id,
+        direction="Borg seeks revenge",
+        intensity=NarrativeIntensity(2),
+        pressure=NarrativePressure(3),
+    )
+
+    with pytest.raises(AttributeError):
+        intention.id = UUID(int=2)  # pyright: ignore[reportAttributeAccessIssue]
+
+    assert intention.id == original_id

@@ -15,10 +15,14 @@ class NarrativePreparation:
         if not description.strip():
             raise ValueError("Narrative preparation description cannot be blank")
 
-        self.id = id
+        self._id = id
         self._intention = intention
         self.description = description
         self.justification = justification
+
+    @property
+    def id(self) -> UUID:
+        return self._id
 
     @property
     def intention(self) -> NarrativeIntention:

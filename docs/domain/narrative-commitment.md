@@ -10,6 +10,8 @@ Uma Intenção Narrativa é uma direção desejada para a história que ainda po
 
 Uma Intenção Narrativa pressiona o sistema para encontrar alguma forma coerente de realização, mas não garante que acontecerá. Espera-se que boa parte das Intenções seja realizada, diretamente ou por meio de combinação com outras, quando o sistema estiver funcionando adequadamente. Enquanto permanecer apenas como intenção, ela não altera o Cânone da História.
 
+Uma Intenção possui identidade estável durante sua existência. Sua direção, sua Intensidade Narrativa, sua Pressão Narrativa e seu estado podem evoluir sem substituir essa identidade; alterar seu identificador não é uma transição válida.
+
 O planejamento atual privilegia Intenções pequenas, normalmente realizáveis por uma única Situação. Intenções maiores, que precisem de várias Situações para serem cumpridas, permanecem como possibilidade para uma evolução futura do sistema.
 
 Uma Intenção possui **Intensidade Narrativa** e **Pressão Narrativa**, que representam dimensões diferentes:
@@ -40,6 +42,8 @@ Uma Preparação Narrativa é uma forma mais concreta pela qual uma Intenção N
 Uma Preparação continua sendo uma possibilidade, não um fato. Ela permanece maleável, embora menos que a Intenção que a originou. O Narrador pode adaptá-la ao reconhecer uma oportunidade mais adequada, desde que a alteração respeite o Cânone e os compromissos que já tenham se tornado reais.
 
 Cada Preparação é filha de uma única Intenção Narrativa, mas uma Intenção pode desdobrar-se em várias Preparações alternativas, como uma missão paralela, uma interrupção de intenção declarada ou outra situação compatível com sua direção.
+
+Uma Preparação também possui identidade estável. Adaptações preservam tanto essa identidade quanto a Intenção Narrativa que a originou; substituir qualquer uma delas não é uma adaptação válida.
 
 Para uma Intenção pequena, é provável que apenas uma de suas Preparações alternativas precise tornar-se uma Situação. As demais devem ser reavaliadas ou encerradas quando perderem sua finalidade. Uma mesma Situação pode, entretanto, materializar Preparações compatíveis oriundas de Intenções diferentes.
 
