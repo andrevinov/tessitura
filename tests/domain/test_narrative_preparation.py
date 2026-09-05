@@ -9,6 +9,26 @@ from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 
 
+def test_narrative_preparation_preserves_its_intention() -> None:
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction="Borg seeks revenge",
+        intensity=NarrativeIntensity(3),
+        pressure=NarrativePressure(2),
+    )
+
+    preparation = NarrativePreparation(
+        id=UUID(int=2),
+        intention=intention,
+        description="Borg hires mercenaries",
+        justification=NarratorJustification(
+            "This form preserves Borg as the causal origin."
+        ),
+    )
+
+    assert preparation.intention is intention
+
+
 def test_narrative_preparation_cannot_change_its_intention() -> None:
     original_intention = NarrativeIntention(
         id=UUID(int=1),
@@ -35,3 +55,22 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
         preparation.intention = another_intention  # pyright: ignore[reportAttributeAccessIssue]
 
     assert preparation.intention.id == original_intention.id
+
+
+def test_narrative_preparation_rejects_blank_description() -> None:
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction="Borg seeks revenge",
+        intensity=NarrativeIntensity(3),
+        pressure=NarrativePressure(2),
+    )
+
+    with pytest.raises(ValueError, match="description cannot be blank"):
+        NarrativePreparation(
+            id=UUID(int=2),
+            intention=intention,
+            description="   ",
+            justification=NarratorJustification(
+                "This form preserves Borg as the causal origin."
+            ),
+        )

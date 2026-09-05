@@ -12,6 +12,9 @@ class NarrativePreparation:
         description: str,
         justification: NarratorJustification,
     ) -> None:
+        if not description.strip():
+            raise ValueError("Narrative preparation description cannot be blank")
+
         self.id = id
         self._intention = intention
         self.description = description
