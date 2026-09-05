@@ -25,6 +25,20 @@ Uma Intenção de vingança ancorada em Borg, por exemplo, pode ser preparada po
 
 Uma Intenção cumprida é encerrada e deixa de pressionar o sistema, abrindo espaço para outras. Uma Intenção que perde coerência ou permanece sem forma adequada pode ser transformada, combinada com outra ou encerrada sem realização.
 
+### Avaliação e Reavaliação de Intensidade e Pressão
+
+A Avaliação de Intensidade e Pressão estabelece os valores iniciais de uma Intenção Narrativa. A Reavaliação de Intensidade e Pressão reconsidera os valores de uma Intenção existente. Ambas são realizadas inteiramente pelo Narrador, que interpreta o contexto relevante, escolhe os valores e fornece uma Justificativa do Narrador.
+
+Intensidade e Pressão podem aumentar, diminuir ou permanecer iguais em uma reavaliação, inclusive depois que a Intenção tiver originado Preparações Narrativas. As duas dimensões não precisam variar juntas nem no mesmo sentido. A passagem do tempo, mudanças nos recursos ou outros acontecimentos não determinam por si mesmos uma direção obrigatória de alteração. O Narrador deve escolher uma interpretação coerente com os personagens, as Âncoras Narrativas e o Cânone, sem pressupor uma única reação narrativamente correta.
+
+Nessas avaliações, a responsabilidade do Tessitura é receber os dados e executar as validações determinísticas programadas. Tessitura não julga a interpretação do Narrador nem calcula qual reação narrativa deveria decorrer dos acontecimentos. A aplicação e o registro dos valores são operações distintas da avaliação narrativa.
+
+Avaliação inicial e reavaliação representam momentos distintos da mesma atividade.
+
+Como hipótese de apoio ao fluxo, Tessitura poderá sinalizar a necessidade de reavaliação a partir de condições estruturadas, como tempo ficcional decorrido, e fornecer contexto relevante em níveis de aprofundamento sob demanda. Sinalizar uma reavaliação não determinará seu resultado.
+
+A representação em classes ou mecanismos e o formato dos dados recebidos — valores finais ou variações — permanecem em aberto.
+
 ### Avaliação de Elegibilidade
 
 Antes de produzir Preparações Narrativas, uma Intenção deve passar por uma Avaliação de Elegibilidade executada inteiramente pelo Tessitura. A avaliação aplica Critérios de Elegibilidade estruturados ao Cânone da História e ao estado atual da Intenção.

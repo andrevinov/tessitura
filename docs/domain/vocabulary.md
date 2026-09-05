@@ -26,6 +26,10 @@
 
 **Pressão Narrativa:** urgência com que o sistema deve procurar uma realização para uma Intenção Narrativa, sem alterar sua Intensidade Narrativa.
 
+**Avaliação de Intensidade e Pressão:** avaliação realizada inteiramente pelo Narrador para estabelecer os valores iniciais de Intensidade Narrativa e Pressão Narrativa de uma Intenção Narrativa, com base no contexto relevante e acompanhada de uma Justificativa do Narrador. Ao receber os dados, Tessitura executa as validações determinísticas programadas, sem julgar a interpretação do Narrador.
+
+**Reavaliação de Intensidade e Pressão:** nova avaliação realizada inteiramente pelo Narrador para reconsiderar a Intensidade Narrativa e a Pressão Narrativa de uma Intenção existente, inclusive quando ela já possui Preparações Narrativas. Cada valor pode aumentar, diminuir ou permanecer igual, sem exigir a mesma variação do outro. Exige uma Justificativa do Narrador e está sujeita às validações determinísticas programadas no Tessitura.
+
 **Âncora Narrativa:** vínculo opcional entre uma Intenção Narrativa e um ou mais elementos do Cânone da História que devem permanecer causalmente relacionados às suas possíveis realizações. A âncora restringe a direção das Preparações Narrativas sem determinar necessariamente quem executará a Situação.
 
 **Preparação Narrativa:** forma concreta possível de materializar uma única Intenção Narrativa. Ela pode definir participantes, alvos, lugares, condições e gatilhos, mas ainda não pertence ao Cânone da História.

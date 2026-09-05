@@ -17,3 +17,9 @@ Tessitura deverá combinar um núcleo determinístico com a discricionariedade n
 O Narrador deverá participar quando a decisão exigir interpretação semântica, adaptação contextual ou escolha entre várias soluções narrativamente válidas. Tessitura deverá recuperar apenas as informações relevantes, apresentar evidências quando necessárias, validar as decisões recebidas e controlar sua entrada na realidade do jogo.
 
 Sempre que o Narrador criar, adaptar, avaliar, bloquear, descartar ou confirmar algo discricionariamente, deverá fornecer uma Justificativa do Narrador em prosa curta. Essas justificativas deverão ser persistidas para permitir auditoria das decisões e fornecer material para melhorar o Tessitura no longo prazo.
+
+## Motor narrativo
+
+O motor narrativo é um dos motores previstos para o Tessitura. Ele deverá apoiar a evolução de direções narrativas em possibilidades concretas e sua entrada controlada na realidade da campanha, preservando o Cânone e a liberdade de ação do Jogador. Seu funcionamento combinará operações determinísticas do Tessitura com decisões discricionárias do Narrador, conforme o princípio de mediação.
+
+Os conceitos e as responsabilidades desse motor estão descritos no [modelo de compromisso narrativo](domain/narrative-commitment.md).
