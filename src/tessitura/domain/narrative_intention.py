@@ -1,6 +1,9 @@
 from uuid import UUID
 
 from .narrative_intensity import NarrativeIntensity
+from .narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
+)
 from .narrative_pressure import NarrativePressure
 
 
@@ -9,16 +12,14 @@ class NarrativeIntention:
         self,
         id: UUID,
         direction: str,
-        intensity: NarrativeIntensity,
-        pressure: NarrativePressure,
+        current_assessment: NarrativeIntensityAndPressureAssessment,
     ) -> None:
         if not direction.strip():
             raise ValueError("Narrative intention direction cannot be blank")
 
         self._id = id
         self._direction = direction
-        self.intensity = intensity
-        self._pressure = pressure
+        self._current_assessment = current_assessment
 
     @property
     def id(self) -> UUID:
@@ -29,11 +30,18 @@ class NarrativeIntention:
         return self._direction
 
     @property
+    def current_assessment(self) -> NarrativeIntensityAndPressureAssessment:
+        return self._current_assessment
+
+    @property
+    def intensity(self) -> NarrativeIntensity:
+        return self._current_assessment.intensity
+
+    @property
     def pressure(self) -> NarrativePressure:
-        return self._pressure
+        return self._current_assessment.pressure
 
-    def increase_pressure(self, amount: int) -> None:
-        if amount <= 0:
-            raise ValueError("Narrative pressure increase must be positive")
-
-        self._pressure = NarrativePressure(self._pressure.value + amount)
+    def apply_assessment(
+        self, assessment: NarrativeIntensityAndPressureAssessment
+    ) -> None:
+        self._current_assessment = assessment
