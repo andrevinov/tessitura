@@ -41,7 +41,20 @@ Avaliação inicial e reavaliação representam momentos distintos da mesma ativ
 
 `NarrativeIntensityAndPressureAssessment` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa o resultado da avaliação, não o mecanismo que a realiza.
 
-O resultado contém valores finais, não variações a somar ou subtrair. Os objetos que o compõem rejeitam intensidade ou pressão negativas e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
+O resultado contém valores finais, não variações a somar ou subtrair. Atualmente, os objetos que o compõem rejeitam intensidade ou pressão negativas e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
+
+#### Escalas de Intensidade e Pressão
+
+As faixas acordadas são inteiras e incluem seus limites:
+
+- **Pressão Narrativa: de 0 a 100.** Zero representa ausência de urgência atual para buscar uma realização.
+- **Intensidade Narrativa: de 1 a 100.** Toda Intenção possui alguma força de realização; zero não integra essa escala.
+
+Os valores são pontos da escala do motor narrativo, não porcentagens nem probabilidades. As faixas permitem ajustes pequenos sem casas decimais e não exigem que intensidade e pressão variem juntas.
+
+O Narrador escolhe os valores dentro dessas faixas. Cabe ao Tessitura rejeitar valores fora dos limites, sem arredondar ou ajustar silenciosamente uma entrada para o mínimo ou o máximo permitido.
+
+Esses limites ainda não estão implementados: os Value Objects atuais rejeitam valores negativos, mas aceitam intensidade zero e não impõem o máximo de 100. A atualização das validações e de seus testes permanece pendente.
 
 #### Resultado vigente na Intenção
 
@@ -99,9 +112,58 @@ Antes de produzir Preparações Narrativas, uma Intenção deve passar por uma A
 
 A Avaliação de Elegibilidade é uma operação pura, determinística e idempotente para os mesmos dados. Ela pode ser repetida sem participação do Narrador e sem consumo de tokens. Uma mudança no tempo ficcional, no Estado do Mundo, na Pressão Narrativa, nas Âncoras Narrativas ou em outro dado relevante representa uma nova entrada e pode produzir um resultado diferente.
 
-Tessitura não precisa avaliar continuamente todas as Intenções. Ele pode reavaliar apenas aquelas afetadas quando algum dado relevante mudar. O resultado positivo estabelece que a Intenção está elegível, mas não cria Preparações Narrativas.
+Tessitura não precisa avaliar continuamente todas as Intenções. No modelo acordado, toda mudança em um campo acompanhado solicita a reavaliação das Intenções vinculadas àquela condição, inclusive quando a mudança faz uma condição deixar de ser satisfeita. O resultado positivo estabelece que a Intenção está elegível, mas não cria Preparações Narrativas.
 
 O Narrador é responsável por transformar uma Intenção Elegível em uma ou várias Preparações Narrativas. Como a Avaliação de Elegibilidade não envolve discricionariedade do Narrador, ela não exige uma Justificativa do Narrador. Tessitura pode manter diagnósticos estruturados para auditoria ou depuração sem convertê-los em prosa destinada à IA.
+
+#### Condições acompanhadas
+
+O modelo acordado considera as seguintes condições, conforme sua pertinência para cada Intenção:
+
+- **Pressão Narrativa:** comparação da pressão vigente com um limite configurado.
+- **Distância física:** comparação entre referências espaciais definidas e um limite configurado de distância.
+- **Janela de tempo ficcional:** uma data foi alcançada ou o momento atual está dentro de um intervalo definido.
+- **Nível do personagem ou do grupo:** um nível individual ou a soma dos níveis do grupo atingiu um limite configurado.
+- **Estado de elementos ligados às âncoras:** campos estruturados satisfazem condições explícitas, como um personagem estar vivo ou livre e uma passagem estar aberta.
+- **Pré-requisitos canônicos:** um acontecimento identificado ocorreu ou uma informação específica está registrada como conhecida por determinado personagem ou grupo.
+- **Disponibilidade de recursos:** quantidades registradas, como soldados, dinheiro ou cargas de um artefato, satisfazem limites definidos.
+- **Intervalo desde uma ocorrência anterior:** passou o tempo ficcional configurado desde uma preparação ou situação associada à Intenção.
+
+Todas essas categorias podem ser acompanhadas; cada Intenção usa apenas as condições pertinentes a ela. O acompanhamento identifica mudanças nos dados utilizados pelas condições, não apenas a passagem de um resultado falso para verdadeiro. Avanços de tempo e deslocamentos também podem alterar essas entradas.
+
+O disparo solicita uma nova verificação; não comprova a elegibilidade. Não há necessidade de um primeiro nível de pontuação para autorizar a avaliação: a mudança acompanhada já a solicita. Reavaliar a elegibilidade não recalcula intensidade ou pressão nem solicita, por si só, uma nova interpretação do Narrador.
+
+#### Limite padrão da condição de pressão
+
+O limite padrão acordado é **50**, configurável por Intenção. A condição de pressão é satisfeita quando a pressão vigente é **maior ou igual ao limite configurado**. O valor 50 é uma hipótese inicial, revisável conforme a experiência em campanhas, e ainda não está implementado.
+
+Esse limite não impede reavaliações abaixo dele. Com o padrão de 50, uma mudança de 30 para 40 solicita reavaliação, mas mantém a condição falsa; de 49 para 50, torna a condição verdadeira; de 50 para 49, torna-a falsa novamente. Todas essas mudanças solicitam reavaliação quando a pressão é acompanhada.
+
+A condição pode contribuir com seu peso ou funcionar como requisito obrigatório, conforme a configuração da Intenção. Atingir 50 não garante, isoladamente, a elegibilidade, e esse valor não define a pontuação mínima da soma ponderada.
+
+#### Condições obrigatórias e ponderadas
+
+Uma condição pode funcionar como requisito obrigatório ou como contribuição ponderada. As condições obrigatórias precisam estar todas satisfeitas e não acrescentam pontos. Nenhuma pontuação compensa um requisito obrigatório não satisfeito.
+
+Cada condição ponderada satisfeita acrescenta seu peso à pontuação; uma condição não satisfeita acrescenta zero. A proposta inicial usa pesos e pontuação mínima inteiros não negativos. A regra de combinação é:
+
+> Uma Intenção está elegível quando todas as condições obrigatórias estão satisfeitas e a soma dos pesos das condições ponderadas satisfeitas é maior ou igual à pontuação mínima configurada.
+
+O Tessitura executa essa configuração de forma determinística. Ele não interpreta a história para inventar pesos, limites ou obrigatoriedades durante a avaliação.
+
+#### Referências espaciais
+
+A distância considerada é física, calculável a partir de dados espaciais estruturados, e não uma interpretação de "distância narrativa". Cada condição de distância precisa identificar as referências comparadas e o limite aplicável. A representação dos mapas e o sistema de coordenadas ainda não foram definidos.
+
+Não se exige uma coordenada própria e única para toda Âncora Narrativa. Um item carregado pode acompanhar a posição do portador; uma doença ou catástrofe pode estar associada a uma área; certas âncoras podem não ter uma posição física pertinente à avaliação.
+
+Proximidade não é obrigatória para toda Intenção. Borg pode enviar mercenários mesmo estando distante, de modo que a proximidade com ele pode ter pouco peso ou nem participar das condições. Já uma possibilidade de contrair uma doença exclusivamente em determinado pântano pode exigir presença naquela área como condição obrigatória, impossível de compensar com pressão alta.
+
+#### Limites da implementação de elegibilidade
+
+As regras desta seção foram discutidas, mas ainda não estão implementadas. O primeiro recorte proposto é uma função pura no domínio que recebe os resultados já verificados das condições obrigatórias, os resultados e pesos das condições ponderadas e a pontuação mínima, e responde se a Intenção está elegível.
+
+Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, a verificação de cada condição concreta, os mapas e a identificação das Intenções afetadas permanecem fora desse recorte. Também não se pressupõe que exista uma regra universal de pressão mínima suficiente para determinar elegibilidade.
 
 ### Preparação Narrativa
 
