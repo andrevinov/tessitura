@@ -116,6 +116,12 @@ Tessitura não precisa avaliar continuamente todas as Intenções. No modelo aco
 
 O Narrador é responsável por transformar uma Intenção Elegível em uma ou várias Preparações Narrativas. Como a Avaliação de Elegibilidade não envolve discricionariedade do Narrador, ela não exige uma Justificativa do Narrador. Tessitura pode manter diagnósticos estruturados para auditoria ou depuração sem convertê-los em prosa destinada à IA.
 
+#### Configuração de elegibilidade na criação
+
+No modelo acordado, uma Intenção deve nascer com uma configuração de elegibilidade que contenha ao menos uma condição obrigatória ou ponderada. A ausência completa de condições representa uma configuração incompleta que deve ser rejeitada na criação, não uma Intenção automaticamente elegível nem uma condição temporária de inelegibilidade. Essa exigência na construção de `NarrativeIntention` ainda não está implementada.
+
+A configuração descreve as regras cadastradas, como "nível mínimo 5", e os parâmetros da combinação. Os booleanos recebidos por `evaluate_narrative_eligibility()` são resultados da verificação dessas regras em um momento específico, não a configuração em si. Cadastrar as condições na criação não significa congelar seus resultados: mudanças nos dados acompanhados podem mudar esses resultados.
+
 #### Condições acompanhadas
 
 O modelo acordado considera as seguintes condições, conforme sua pertinência para cada Intenção:
@@ -145,7 +151,7 @@ A condição pode contribuir com seu peso ou funcionar como requisito obrigatór
 
 Uma condição pode funcionar como requisito obrigatório ou como contribuição ponderada. As condições obrigatórias precisam estar todas satisfeitas e não acrescentam pontos. Nenhuma pontuação compensa um requisito obrigatório não satisfeito.
 
-Cada condição ponderada satisfeita acrescenta seu peso à pontuação; uma condição não satisfeita acrescenta zero. A proposta inicial usa pesos e pontuação mínima inteiros não negativos. A regra de combinação é:
+Cada condição ponderada satisfeita acrescenta seu peso à pontuação; uma condição não satisfeita acrescenta zero. O cálculo recebe pesos e pontuação mínima inteiros não negativos. A regra de combinação é:
 
 > Uma Intenção está elegível quando todas as condições obrigatórias estão satisfeitas e a soma dos pesos das condições ponderadas satisfeitas é maior ou igual à pontuação mínima configurada.
 
@@ -161,9 +167,17 @@ Proximidade não é obrigatória para toda Intenção. Borg pode enviar mercená
 
 #### Limites da implementação de elegibilidade
 
-As regras desta seção foram discutidas, mas ainda não estão implementadas. O primeiro recorte proposto é uma função pura no domínio que recebe os resultados já verificados das condições obrigatórias, os resultados e pesos das condições ponderadas e a pontuação mínima, e responde se a Intenção está elegível.
+`evaluate_narrative_eligibility()` implementa a regra de combinação como uma função pura no domínio, não como um caso de uso. Ela recebe `mandatory_conditions`, uma sequência de resultados booleanos; `weighted_conditions`, uma sequência de pares `(condição_satisfeita, peso)`; e `minimum_score`, a pontuação mínima. Retorna `True` quando todas as obrigatórias estão satisfeitas e a soma dos pesos das ponderadas satisfeitas alcança ou supera o limite; caso contrário, retorna `False`.
 
-Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, a verificação de cada condição concreta, os mapas e a identificação das Intenções afetadas permanecem fora desse recorte. Também não se pressupõe que exista uma regra universal de pressão mínima suficiente para determinar elegibilidade.
+A função rejeita pesos ou pontuação mínima negativos com `ValueError`, mesmo quando uma condição obrigatória não está satisfeita. Pesos de condições ponderadas falsas também são validados, embora não contribuam para a pontuação.
+
+Com ambas as sequências vazias, a função lança `ValueError`, inclusive quando a pontuação mínima é zero. Ter somente condições obrigatórias ou somente ponderadas continua permitido: sem obrigatórias não há bloqueio obrigatório; sem ponderadas a pontuação é zero, mas as obrigatórias ainda precisam ser satisfeitas. A ausência de condições é uma entrada inválida, distinta de condições existentes que não foram satisfeitas.
+
+Os testes cobrem bloqueio obrigatório apesar de pontuação suficiente, pontuação abaixo, igual e acima do limite, ausência de contribuição de condições falsas, rejeição de configurações negativas e de ausência completa de condições, além da avaliação com uma única categoria de condições.
+
+`NarrativeIntention` ainda não recebe uma configuração de elegibilidade. Antes de integrá-la ao construtor, falta definir a representação das condições cadastradas e de suas referências aos dados da campanha. Por isso, a função consegue rejeitar a ausência completa de resultados, mas ainda não confere se uma lista parcialmente preenchida contém todas as condições esperadas para a Intenção.
+
+Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, a verificação de cada condição concreta, os mapas e a identificação das Intenções afetadas permanecem pendentes. O limite padrão de pressão 50 não é aplicado por essa função: comparar pressão e limite pertence à verificação da condição concreta, anterior à combinação dos resultados.
 
 ### Preparação Narrativa
 
