@@ -63,6 +63,14 @@ Vários registros podem se referir à mesma Intenção por `intention_id`. O reg
 
 Criar um registro não aplica seu resultado à Intenção. Da mesma forma, aplicar um resultado não o registra. Um registro de avaliação, isoladamente, não comprova que seu resultado foi aplicado.
 
+#### Aplicação de uma avaliação registrada
+
+`apply_recorded_narrative_assessment()` é um caso de uso implementado como função na camada de aplicação. Ele recebe uma Intenção e um registro já construídos, verifica se `record.intention_id` corresponde a `intention.id` e delega a substituição do resultado vigente a `NarrativeIntention.apply_assessment()`.
+
+Um registro de outra Intenção é rejeitado com `ValueError` antes de qualquer substituição, preservando integralmente o resultado vigente. Quando a correspondência é válida, `current_assessment` passa a referenciar exatamente o resultado do registro recebido.
+
+Em aplicações sucessivas, a Intenção fica com o último resultado aplicado; os registros anteriores preservam seus resultados e justificativas. O caso de uso não cria nem salva registros, não mantém uma coleção histórica e não verifica a ordem cronológica das avaliações. Aplicar um registro não significa persistir esse registro.
+
 #### Categorias de disparo
 
 O enum `EvaluationTriggerKind` representa as categorias de origem da avaliação:
@@ -81,7 +89,7 @@ O enum identifica somente a categoria. Ele não contém a condição concreta, o
 
 #### Limites da implementação atual
 
-Existem as representações do resultado, do registro e das categorias de disparo, além da substituição do resultado vigente na Intenção. Ainda não existem monitoramento de condições, agendamento, persistência de histórico ou coordenação automática entre registrar e aplicar uma avaliação.
+Existem as representações do resultado, do registro e das categorias de disparo, além da substituição do resultado vigente na Intenção e do caso de uso que aplica o resultado de um registro correspondente. Ainda não existem monitoramento de condições, agendamento, persistência de histórico ou coordenação automática entre criar um registro e aplicar uma avaliação.
 
 O fornecimento de contexto em níveis de aprofundamento sob demanda continua sendo uma hipótese de apoio ao fluxo, não um mecanismo implementado.
 
