@@ -141,7 +141,13 @@ O disparo solicita uma nova verificação; não comprova a elegibilidade. Não h
 
 #### Limite padrão da condição de pressão
 
-O limite padrão acordado é **50**, configurável por Intenção. A condição de pressão é satisfeita quando a pressão vigente é **maior ou igual ao limite configurado**. O valor 50 é uma hipótese inicial, revisável conforme a experiência em campanhas, e ainda não está implementado.
+O limite padrão acordado é **50**, configurável por Intenção no modelo. A condição de pressão é satisfeita quando a pressão vigente é **maior ou igual ao limite configurado**. O valor 50 é uma hipótese inicial, revisável conforme a experiência em campanhas, e já está implementado como padrão da condição concreta, ainda sem integração à configuração da Intenção.
+
+`MinimumNarrativePressureCondition` é um Value Object imutável no domínio. Seu campo `minimum` contém um `NarrativePressure`, com padrão 50, e aceita um limite personalizado representado pelo mesmo tipo. Assim, o limite utiliza a faixa válida de pressão, de 0 a 100.
+
+O método `is_satisfied_by(pressure)` recebe um `NarrativePressure` e retorna o resultado de `pressure.value >= minimum.value`, sem consultar nem alterar a Intenção. A condição representa a regra cadastrada; o booleano retornado representa o resultado de uma verificação. Os testes cobrem a configuração padrão e personalizada e a comparação abaixo, exatamente no limite e acima dele.
+
+A classificação dessa condição como obrigatória ou ponderada, seu peso quando aplicável e sua inclusão na configuração de `NarrativeIntention` ainda não estão implementados. A condição não dispara avaliações automaticamente nem decide sozinha a elegibilidade completa.
 
 Esse limite não impede reavaliações abaixo dele. Com o padrão de 50, uma mudança de 30 para 40 solicita reavaliação, mas mantém a condição falsa; de 49 para 50, torna a condição verdadeira; de 50 para 49, torna-a falsa novamente. Todas essas mudanças solicitam reavaliação quando a pressão é acompanhada.
 
@@ -175,9 +181,9 @@ Com ambas as sequências vazias, a função lança `ValueError`, inclusive quand
 
 Os testes cobrem bloqueio obrigatório apesar de pontuação suficiente, pontuação abaixo, igual e acima do limite, ausência de contribuição de condições falsas, rejeição de configurações negativas e de ausência completa de condições, além da avaliação com uma única categoria de condições.
 
-`NarrativeIntention` ainda não recebe uma configuração de elegibilidade. Antes de integrá-la ao construtor, falta definir a representação das condições cadastradas e de suas referências aos dados da campanha. Por isso, a função consegue rejeitar a ausência completa de resultados, mas ainda não confere se uma lista parcialmente preenchida contém todas as condições esperadas para a Intenção.
+`NarrativeIntention` ainda não recebe uma configuração de elegibilidade. A primeira condição concreta cadastrável já existe em `MinimumNarrativePressureCondition`, mas sua organização em uma configuração com condições obrigatórias ou ponderadas ainda está pendente. Por isso, a função consegue rejeitar a ausência completa de resultados, mas ainda não confere se uma lista parcialmente preenchida contém todas as condições esperadas para a Intenção.
 
-Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, a verificação de cada condição concreta, os mapas e a identificação das Intenções afetadas permanecem pendentes. O limite padrão de pressão 50 não é aplicado por essa função: comparar pressão e limite pertence à verificação da condição concreta, anterior à combinação dos resultados.
+Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, as demais condições concretas, os mapas e a identificação das Intenções afetadas permanecem pendentes. O limite padrão de pressão 50 não é aplicado por essa função: comparar pressão e limite pertence a `MinimumNarrativePressureCondition.is_satisfied_by()`, cuja verificação é anterior à combinação dos resultados.
 
 ### Preparação Narrativa
 
