@@ -34,8 +34,18 @@ def test_narrative_intention_keeps_intensity_and_pressure_distinct() -> None:
 @pytest.mark.parametrize(
     ("intensity_value", "pressure_value", "justification_text", "error_message"),
     [
-        (-1, 4, "Borg is postponing his retaliation.", "intensity cannot be negative"),
-        (4, -1, "Borg is postponing his retaliation.", "pressure cannot be negative"),
+        (
+            -1,
+            4,
+            "Borg is postponing his retaliation.",
+            "intensity must be between 1 and 100",
+        ),
+        (
+            4,
+            -1,
+            "Borg is postponing his retaliation.",
+            "pressure must be between 0 and 100",
+        ),
         (4, 5, "", "justification cannot be empty"),
         (4, 5, "   ", "justification cannot be empty"),
     ],

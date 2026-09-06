@@ -6,5 +6,5 @@ class NarrativePressure:
     value: int
 
     def __post_init__(self) -> None:
-        if self.value < 0:
-            raise ValueError("Narrative pressure cannot be negative")
+        if not 0 <= self.value <= 100:
+            raise ValueError("Narrative pressure must be between 0 and 100")

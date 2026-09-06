@@ -16,6 +16,12 @@ def test_narrative_intensity_is_immutable() -> None:
         intensity.value = 2  # pyright: ignore[reportAttributeAccessIssue]
 
 
-def test_narrative_intensity_rejects_negative_value() -> None:
-    with pytest.raises(ValueError, match="cannot be negative"):
-        NarrativeIntensity(-1)
+@pytest.mark.parametrize("value", [1, 100])
+def test_narrative_intensity_accepts_range_boundaries(value: int) -> None:
+    assert NarrativeIntensity(value).value == value
+
+
+@pytest.mark.parametrize("value", [-1, 0, 101])
+def test_narrative_intensity_rejects_out_of_range_value(value: int) -> None:
+    with pytest.raises(ValueError, match="must be between 1 and 100"):
+        NarrativeIntensity(value)

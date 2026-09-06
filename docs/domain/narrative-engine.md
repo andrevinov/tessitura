@@ -41,7 +41,7 @@ Avaliação inicial e reavaliação representam momentos distintos da mesma ativ
 
 `NarrativeIntensityAndPressureAssessment` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa o resultado da avaliação, não o mecanismo que a realiza.
 
-O resultado contém valores finais, não variações a somar ou subtrair. Atualmente, os objetos que o compõem rejeitam intensidade ou pressão negativas e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
+O resultado contém valores finais, não variações a somar ou subtrair. Os objetos que o compõem rejeitam intensidade ou pressão fora das faixas definidas abaixo e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
 
 #### Escalas de Intensidade e Pressão
 
@@ -54,7 +54,7 @@ Os valores são pontos da escala do motor narrativo, não porcentagens nem proba
 
 O Narrador escolhe os valores dentro dessas faixas. Cabe ao Tessitura rejeitar valores fora dos limites, sem arredondar ou ajustar silenciosamente uma entrada para o mínimo ou o máximo permitido.
 
-Esses limites ainda não estão implementados: os Value Objects atuais rejeitam valores negativos, mas aceitam intensidade zero e não impõem o máximo de 100. A atualização das validações e de seus testes permanece pendente.
+Os limites estão implementados nos Value Objects: `NarrativePressure` rejeita valores fora de 0 a 100 e `NarrativeIntensity` rejeita valores fora de 1 a 100, lançando `ValueError` durante a construção. Os testes cobrem a aceitação dos extremos de cada faixa e a rejeição de valores abaixo do mínimo e acima do máximo.
 
 #### Resultado vigente na Intenção
 
