@@ -30,6 +30,14 @@
 
 **Reavaliação de Intensidade e Pressão:** nova avaliação realizada inteiramente pelo Narrador para reconsiderar a Intensidade Narrativa e a Pressão Narrativa de uma Intenção existente, inclusive quando ela já possui Preparações Narrativas. Cada valor pode aumentar, diminuir ou permanecer igual, sem exigir a mesma variação do outro. Exige uma Justificativa do Narrador e está sujeita às validações determinísticas programadas no Tessitura.
 
+**Resultado de Avaliação de Intensidade e Pressão:** conjunto imutável dos valores finais de Intensidade Narrativa e Pressão Narrativa e da Justificativa do Narrador. Representa o que foi decidido, não a atividade de avaliar nem variações a aplicar aos valores anteriores.
+
+**Resultado Vigente:** resultado de avaliação atualmente aplicado a uma Intenção Narrativa, exposto por `current_assessment`. Cada Intenção mantém um único resultado vigente; uma nova aplicação substitui o conjunto completo, sem modificar o resultado anterior.
+
+**Registro de Avaliação de Intensidade e Pressão:** ocorrência imutável de avaliação concluída, com identidade própria, identidade da Intenção avaliada, data e hora reais com fuso, categoria do disparo e resultado. Uma Intenção pode ter vários registros, inclusive com resultados iguais. A existência de um registro não comprova sua persistência nem a aplicação de seu resultado.
+
+**Categoria de Disparo de Avaliação:** classificação da origem da avaliação, representada por `EvaluationTriggerKind`: avaliação inicial, limite de tempo, limite de nível, mudança de estado da âncora ou mudança de conhecimento. Nas reavaliações, identifica o tipo de condição determinística cuja detecção cabe ao Tessitura, sem determinar a interpretação do Narrador. A categoria não contém os detalhes da condição concreta e sua representação não implementa o monitoramento dessa condição.
+
 **Âncora Narrativa:** vínculo opcional entre uma Intenção Narrativa e um ou mais elementos do Cânone da História que devem permanecer causalmente relacionados às suas possíveis realizações. A âncora restringe a direção das Preparações Narrativas sem determinar necessariamente quem executará a Situação.
 
 **Preparação Narrativa:** forma concreta possível de materializar uma única Intenção Narrativa. Ela pode definir participantes, alvos, lugares, condições e gatilhos, mas ainda não pertence ao Cânone da História.

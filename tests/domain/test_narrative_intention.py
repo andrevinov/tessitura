@@ -31,32 +31,49 @@ def test_narrative_intention_keeps_intensity_and_pressure_distinct() -> None:
     assert intention.pressure is pressure
 
 
-def test_invalid_pressure_does_not_replace_current_intention_pressure() -> None:
-    original_pressure = NarrativePressure(3)
+@pytest.mark.parametrize(
+    ("intensity_value", "pressure_value", "justification_text", "error_message"),
+    [
+        (-1, 4, "Borg is postponing his retaliation.", "intensity cannot be negative"),
+        (4, -1, "Borg is postponing his retaliation.", "pressure cannot be negative"),
+        (4, 5, "", "justification cannot be empty"),
+        (4, 5, "   ", "justification cannot be empty"),
+    ],
+)
+def test_invalid_reassessment_preserves_entire_current_assessment(
+    intensity_value: int,
+    pressure_value: int,
+    justification_text: str,
+    error_message: str,
+) -> None:
+    original_assessment = NarrativeIntensityAndPressureAssessment(
+        intensity=NarrativeIntensity(2),
+        pressure=NarrativePressure(3),
+        justification=NarratorJustification(
+            "A serious retaliation is warranted, but Borg needs time to prepare."
+        ),
+    )
     intention = NarrativeIntention(
         id=UUID(int=0),
         direction="Borg seeks revenge",
-        current_assessment=NarrativeIntensityAndPressureAssessment(
-            intensity=NarrativeIntensity(2),
-            pressure=original_pressure,
-            justification=NarratorJustification(
-                "A serious retaliation is warranted, but Borg needs time to prepare."
-            ),
-        ),
+        current_assessment=original_assessment,
     )
 
-    with pytest.raises(ValueError, match="cannot be negative"):
+    with pytest.raises(ValueError, match=error_message):
         intention.apply_assessment(
             NarrativeIntensityAndPressureAssessment(
-                intensity=NarrativeIntensity(4),
-                pressure=NarrativePressure(-1),
-                justification=NarratorJustification(
-                    "Borg is postponing his retaliation."
-                ),
+                intensity=NarrativeIntensity(intensity_value),
+                pressure=NarrativePressure(pressure_value),
+                justification=NarratorJustification(justification_text),
             )
         )
 
-    assert intention.pressure is original_pressure
+    assert intention.current_assessment is original_assessment
+    assert intention.intensity == NarrativeIntensity(2)
+    assert intention.pressure == NarrativePressure(3)
+    assert intention.current_assessment.justification == NarratorJustification(
+        "A serious retaliation is warranted, but Borg needs time to prepare."
+    )
 
 
 def test_narrative_intention_cannot_change_its_id() -> None:
@@ -136,6 +153,35 @@ def test_narrative_intention_cannot_replace_its_pressure_directly() -> None:
         )
 
     assert intention.pressure is original_pressure
+
+
+def test_narrative_intention_cannot_replace_its_current_assessment_directly() -> None:
+    original_assessment = NarrativeIntensityAndPressureAssessment(
+        intensity=NarrativeIntensity(3),
+        pressure=NarrativePressure(7),
+        justification=NarratorJustification(
+            "Borg seeks a swift retaliation for his injury."
+        ),
+    )
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction="Borg seeks revenge",
+        current_assessment=original_assessment,
+    )
+    alternative_assessment = NarrativeIntensityAndPressureAssessment(
+        intensity=NarrativeIntensity(8),
+        pressure=NarrativePressure(3),
+        justification=NarratorJustification(
+            "Borg chooses a more devastating but patient revenge."
+        ),
+    )
+
+    with pytest.raises(AttributeError):
+        intention.current_assessment = (  # pyright: ignore[reportAttributeAccessIssue]
+            alternative_assessment
+        )
+
+    assert intention.current_assessment is original_assessment
 
 
 def test_narrative_intention_applies_reassessment() -> None:
