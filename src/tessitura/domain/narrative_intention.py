@@ -52,3 +52,8 @@ class NarrativeIntention:
         self, assessment: NarrativeIntensityAndPressureAssessment
     ) -> None:
         self._current_assessment = assessment
+
+    def revise_eligibility_configuration(
+        self, configuration: NarrativeEligibilityConfiguration
+    ) -> None:
+        self._eligibility_configuration = configuration

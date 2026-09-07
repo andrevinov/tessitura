@@ -55,6 +55,109 @@ def test_narrative_intention_preserves_its_eligibility_configuration() -> None:
     assert intention.eligibility_configuration is original_configuration
 
 
+def test_configuration_revision_preserves_identity_and_previous_values() -> None:
+    original_configuration = NarrativeEligibilityConfiguration(
+        mandatory_conditions=(MinimumNarrativePressureCondition(),),
+        weighted_conditions=(
+            (MinimumNarrativePressureCondition(minimum=NarrativePressure(70)), 5),
+        ),
+        minimum_score=5,
+    )
+    original_assessment = NarrativeIntensityAndPressureAssessment(
+        intensity=NarrativeIntensity(3),
+        pressure=NarrativePressure(7),
+        justification=NarratorJustification(
+            "Borg seeks a swift retaliation for his injury."
+        ),
+    )
+    original_id = UUID(int=1)
+    intention = NarrativeIntention(
+        id=original_id,
+        direction="Borg seeks revenge",
+        current_assessment=original_assessment,
+        eligibility_configuration=original_configuration,
+    )
+    revised_configuration = NarrativeEligibilityConfiguration(
+        mandatory_conditions=(),
+        weighted_conditions=(
+            (MinimumNarrativePressureCondition(minimum=NarrativePressure(30)), 2),
+        ),
+        minimum_score=2,
+    )
+
+    intention.revise_eligibility_configuration(revised_configuration)
+
+    assert intention.eligibility_configuration is revised_configuration
+    assert intention.id == original_id
+    assert intention.current_assessment is original_assessment
+    assert original_configuration.mandatory_conditions == (
+        MinimumNarrativePressureCondition(minimum=NarrativePressure(50)),
+    )
+    assert original_configuration.weighted_conditions == (
+        (MinimumNarrativePressureCondition(minimum=NarrativePressure(70)), 5),
+    )
+    assert original_configuration.minimum_score == 5
+
+
+@pytest.mark.parametrize(
+    ("mandatory_conditions", "weighted_conditions", "minimum_score", "error_message"),
+    [
+        ((), (), 0, "requires at least one condition"),
+        (
+            (MinimumNarrativePressureCondition(),),
+            (),
+            -1,
+            "Minimum eligibility score cannot be negative",
+        ),
+        (
+            (),
+            ((MinimumNarrativePressureCondition(), -1),),
+            0,
+            "condition weight cannot be negative",
+        ),
+    ],
+)
+def test_invalid_configuration_revision_preserves_current_configuration(
+    mandatory_conditions: tuple[MinimumNarrativePressureCondition, ...],
+    weighted_conditions: tuple[tuple[MinimumNarrativePressureCondition, int], ...],
+    minimum_score: int,
+    error_message: str,
+) -> None:
+    original_configuration = NarrativeEligibilityConfiguration(
+        mandatory_conditions=(MinimumNarrativePressureCondition(),),
+        weighted_conditions=(),
+        minimum_score=0,
+    )
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction="Borg seeks revenge",
+        current_assessment=NarrativeIntensityAndPressureAssessment(
+            intensity=NarrativeIntensity(3),
+            pressure=NarrativePressure(7),
+            justification=NarratorJustification(
+                "Borg seeks a swift retaliation for his injury."
+            ),
+        ),
+        eligibility_configuration=original_configuration,
+    )
+
+    with pytest.raises(ValueError, match=error_message):
+        intention.revise_eligibility_configuration(
+            NarrativeEligibilityConfiguration(
+                mandatory_conditions=mandatory_conditions,
+                weighted_conditions=weighted_conditions,
+                minimum_score=minimum_score,
+            )
+        )
+
+    assert intention.eligibility_configuration is original_configuration
+    assert original_configuration.mandatory_conditions == (
+        MinimumNarrativePressureCondition(),
+    )
+    assert original_configuration.weighted_conditions == ()
+    assert original_configuration.minimum_score == 0
+
+
 def test_narrative_intention_keeps_intensity_and_pressure_distinct() -> None:
     intensity = NarrativeIntensity(2)
     pressure = NarrativePressure(3)

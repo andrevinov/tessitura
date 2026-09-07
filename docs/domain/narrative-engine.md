@@ -116,7 +116,7 @@ Tessitura não precisa avaliar continuamente todas as Intenções. No modelo aco
 
 O Narrador é responsável por transformar uma Intenção Elegível em uma ou várias Preparações Narrativas. Como a Avaliação de Elegibilidade não envolve discricionariedade do Narrador, ela não exige uma Justificativa do Narrador. Tessitura pode manter diagnósticos estruturados para auditoria ou depuração sem convertê-los em prosa destinada à IA.
 
-#### Configuração de elegibilidade na criação
+#### Criação e revisão da configuração de elegibilidade
 
 Uma Intenção deve nascer com uma configuração de elegibilidade que contenha ao menos uma condição obrigatória ou ponderada. `NarrativeIntention` exige o argumento `eligibility_configuration` na construção e preserva essa configuração em uma propriedade sem setter. A ausência completa de condições é rejeitada durante a construção da configuração, antes de sua entrega à Intenção; não representa elegibilidade automática nem uma condição temporária de inelegibilidade.
 
@@ -125,6 +125,14 @@ Uma Intenção deve nascer com uma configuração de elegibilidade que contenha 
 Os testes protegem as configurações inválidas e o vínculo da Intenção com a configuração recebida, impedindo sua substituição direta. Receber uma configuração não exige que suas condições estejam satisfeitas naquele momento nem executa automaticamente uma avaliação.
 
 A configuração descreve as regras cadastradas, como "nível mínimo 5", e os parâmetros da combinação. Os booleanos recebidos por `evaluate_narrative_eligibility()` são resultados da verificação dessas regras em um momento específico, não a configuração em si. Cadastrar as condições na criação não significa congelar seus resultados: mudanças nos dados acompanhados podem mudar esses resultados.
+
+As próprias regras também podem precisar de revisão. Uma condição que dependesse de um ritual impedido pelo Jogador poderia deixar de ser pertinente, sem que a Intenção perdesse seu sentido. Esse exemplo motiva a revisão, mas condições sobre rituais ainda não estão representadas no código.
+
+`NarrativeIntention.revise_eligibility_configuration()` recebe uma nova configuração válida e substitui a referência vigente, sem modificar a configuração anterior, a identidade da Intenção ou seu resultado de intensidade e pressão. A propriedade continua sem setter. Imutabilidade da configuração não significa que a Intenção precise conservar a mesma configuração para sempre.
+
+A construção da nova configuração executa novamente suas validações. Se falhar por ausência de condições, peso negativo ou pontuação mínima negativa, a chamada de revisão não acontece e a configuração vigente permanece intacta. Os testes protegem a revisão válida, essas falhas de construção e a imutabilidade dos três campos da configuração.
+
+A revisão exige uma mudança explícita: o Tessitura não decide automaticamente quais regras perderam sentido. O método não registra histórico ou justificativa da revisão e não executa a avaliação de elegibilidade.
 
 #### Condições acompanhadas
 
