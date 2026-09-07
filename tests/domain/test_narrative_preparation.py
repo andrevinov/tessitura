@@ -2,6 +2,12 @@ from uuid import UUID
 
 import pytest
 
+from tessitura.domain.minimum_narrative_pressure_condition import (
+    MinimumNarrativePressureCondition,
+)
+from tessitura.domain.narrative_eligibility_configuration import (
+    NarrativeEligibilityConfiguration,
+)
 from tessitura.domain.narrative_intensity import NarrativeIntensity
 from tessitura.domain.narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
@@ -16,6 +22,11 @@ def test_narrative_preparation_preserves_its_intention() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
@@ -41,6 +52,11 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
     original_intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
@@ -60,6 +76,11 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
     another_intention = NarrativeIntention(
         id=UUID(int=3),
         direction="Reveal the corruption beneath the city",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(2),
             pressure=NarrativePressure(1),
@@ -79,6 +100,11 @@ def test_narrative_preparation_rejects_blank_description() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
@@ -104,6 +130,11 @@ def test_narrative_preparation_cannot_change_its_id() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
@@ -132,6 +163,11 @@ def test_narrative_preparation_cannot_change_its_description_directly() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),

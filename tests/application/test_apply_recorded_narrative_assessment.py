@@ -7,6 +7,12 @@ from tessitura.application.apply_recorded_narrative_assessment import (
     apply_recorded_narrative_assessment,
 )
 from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
+from tessitura.domain.minimum_narrative_pressure_condition import (
+    MinimumNarrativePressureCondition,
+)
+from tessitura.domain.narrative_eligibility_configuration import (
+    NarrativeEligibilityConfiguration,
+)
 from tessitura.domain.narrative_intensity import NarrativeIntensity
 from tessitura.domain.narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
@@ -24,6 +30,11 @@ def test_applies_assessment_from_record_for_matching_intention() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(7),
@@ -62,6 +73,11 @@ def test_rejects_record_for_another_intention_without_replacing_assessment() -> 
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=original_assessment,
     )
     record = NarrativeIntensityAndPressureAssessmentRecord(
@@ -88,6 +104,11 @@ def test_successive_applications_preserve_previous_record_result() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(2),
             pressure=NarrativePressure(3),
@@ -142,6 +163,11 @@ def test_reassessment_reaches_existing_preparation_without_rewriting_it() -> Non
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(7),

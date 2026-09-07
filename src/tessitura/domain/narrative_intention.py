@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from .narrative_eligibility_configuration import NarrativeEligibilityConfiguration
 from .narrative_intensity import NarrativeIntensity
 from .narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
@@ -13,6 +14,7 @@ class NarrativeIntention:
         id: UUID,
         direction: str,
         current_assessment: NarrativeIntensityAndPressureAssessment,
+        eligibility_configuration: NarrativeEligibilityConfiguration,
     ) -> None:
         if not direction.strip():
             raise ValueError("Narrative intention direction cannot be blank")
@@ -20,6 +22,7 @@ class NarrativeIntention:
         self._id = id
         self._direction = direction
         self._current_assessment = current_assessment
+        self._eligibility_configuration = eligibility_configuration
 
     @property
     def id(self) -> UUID:
@@ -28,6 +31,10 @@ class NarrativeIntention:
     @property
     def direction(self) -> str:
         return self._direction
+
+    @property
+    def eligibility_configuration(self) -> NarrativeEligibilityConfiguration:
+        return self._eligibility_configuration
 
     @property
     def current_assessment(self) -> NarrativeIntensityAndPressureAssessment:

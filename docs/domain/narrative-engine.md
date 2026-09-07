@@ -118,7 +118,11 @@ O Narrador é responsável por transformar uma Intenção Elegível em uma ou v�
 
 #### Configuração de elegibilidade na criação
 
-No modelo acordado, uma Intenção deve nascer com uma configuração de elegibilidade que contenha ao menos uma condição obrigatória ou ponderada. A ausência completa de condições representa uma configuração incompleta que deve ser rejeitada na criação, não uma Intenção automaticamente elegível nem uma condição temporária de inelegibilidade. Essa exigência na construção de `NarrativeIntention` ainda não está implementada.
+Uma Intenção deve nascer com uma configuração de elegibilidade que contenha ao menos uma condição obrigatória ou ponderada. `NarrativeIntention` exige o argumento `eligibility_configuration` na construção e preserva essa configuração em uma propriedade sem setter. A ausência completa de condições é rejeitada durante a construção da configuração, antes de sua entrega à Intenção; não representa elegibilidade automática nem uma condição temporária de inelegibilidade.
+
+`NarrativeEligibilityConfiguration` é um Value Object imutável com três campos: `mandatory_conditions`, uma tupla de condições obrigatórias; `weighted_conditions`, uma tupla de pares `(condição, peso)`; e `minimum_score`, a pontuação mínima. Rejeita ausência completa de condições, pesos negativos e pontuação mínima negativa com `ValueError`. Inicialmente, ambas as categorias aceitam apenas `MinimumNarrativePressureCondition`, a única condição concreta implementada.
+
+Os testes protegem as configurações inválidas e o vínculo da Intenção com a configuração recebida, impedindo sua substituição direta. Receber uma configuração não exige que suas condições estejam satisfeitas naquele momento nem executa automaticamente uma avaliação.
 
 A configuração descreve as regras cadastradas, como "nível mínimo 5", e os parâmetros da combinação. Os booleanos recebidos por `evaluate_narrative_eligibility()` são resultados da verificação dessas regras em um momento específico, não a configuração em si. Cadastrar as condições na criação não significa congelar seus resultados: mudanças nos dados acompanhados podem mudar esses resultados.
 
@@ -141,13 +145,13 @@ O disparo solicita uma nova verificação; não comprova a elegibilidade. Não h
 
 #### Limite padrão da condição de pressão
 
-O limite padrão acordado é **50**, configurável por Intenção no modelo. A condição de pressão é satisfeita quando a pressão vigente é **maior ou igual ao limite configurado**. O valor 50 é uma hipótese inicial, revisável conforme a experiência em campanhas, e já está implementado como padrão da condição concreta, ainda sem integração à configuração da Intenção.
+O limite padrão acordado é **50**, configurável por Intenção por meio de suas condições cadastradas. A condição de pressão é satisfeita quando a pressão vigente é **maior ou igual ao limite configurado**. O valor 50 é uma hipótese inicial, revisável conforme a experiência em campanhas, e está implementado como padrão da condição concreta.
 
 `MinimumNarrativePressureCondition` é um Value Object imutável no domínio. Seu campo `minimum` contém um `NarrativePressure`, com padrão 50, e aceita um limite personalizado representado pelo mesmo tipo. Assim, o limite utiliza a faixa válida de pressão, de 0 a 100.
 
 O método `is_satisfied_by(pressure)` recebe um `NarrativePressure` e retorna o resultado de `pressure.value >= minimum.value`, sem consultar nem alterar a Intenção. A condição representa a regra cadastrada; o booleano retornado representa o resultado de uma verificação. Os testes cobrem a configuração padrão e personalizada e a comparação abaixo, exatamente no limite e acima dele.
 
-A classificação dessa condição como obrigatória ou ponderada, seu peso quando aplicável e sua inclusão na configuração de `NarrativeIntention` ainda não estão implementados. A condição não dispara avaliações automaticamente nem decide sozinha a elegibilidade completa.
+A condição pode ser incluída entre as obrigatórias ou, acompanhada de seu peso, entre as ponderadas de `NarrativeEligibilityConfiguration`. A condição não dispara avaliações automaticamente nem decide sozinha a elegibilidade completa.
 
 Esse limite não impede reavaliações abaixo dele. Com o padrão de 50, uma mudança de 30 para 40 solicita reavaliação, mas mantém a condição falsa; de 49 para 50, torna a condição verdadeira; de 50 para 49, torna-a falsa novamente. Todas essas mudanças solicitam reavaliação quando a pressão é acompanhada.
 
@@ -181,7 +185,7 @@ Com ambas as sequências vazias, a função lança `ValueError`, inclusive quand
 
 Os testes cobrem bloqueio obrigatório apesar de pontuação suficiente, pontuação abaixo, igual e acima do limite, ausência de contribuição de condições falsas, rejeição de configurações negativas e de ausência completa de condições, além da avaliação com uma única categoria de condições.
 
-`NarrativeIntention` ainda não recebe uma configuração de elegibilidade. A primeira condição concreta cadastrável já existe em `MinimumNarrativePressureCondition`, mas sua organização em uma configuração com condições obrigatórias ou ponderadas ainda está pendente. Por isso, a função consegue rejeitar a ausência completa de resultados, mas ainda não confere se uma lista parcialmente preenchida contém todas as condições esperadas para a Intenção.
+`NarrativeIntention` já exige uma `NarrativeEligibilityConfiguration` com condições cadastradas. Ainda não existe uma operação que percorra essa configuração, verifique todas as condições e encaminhe seus resultados a `evaluate_narrative_eligibility()`. A função permanece independente da configuração: rejeita a ausência completa de resultados, mas não confere se uma lista parcialmente preenchida contém todas as condições esperadas para a Intenção.
 
 Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, as demais condições concretas, os mapas e a identificação das Intenções afetadas permanecem pendentes. O limite padrão de pressão 50 não é aplicado por essa função: comparar pressão e limite pertence a `MinimumNarrativePressureCondition.is_satisfied_by()`, cuja verificação é anterior à combinação dos resultados.
 
