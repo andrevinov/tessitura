@@ -1,5 +1,37 @@
 # Motor narrativo
 
+## Questões Narrativas
+
+A Questão Narrativa é a unidade acordada para solicitar a participação interpretativa ou criativa do Narrador. O Tessitura apresenta um enunciado e contexto; o Narrador responde e justifica sua decisão na questão. Responder e aplicar as consequências são operações distintas. Esse modelo orienta a evolução do motor, mas ainda não substitui todos os fluxos existentes.
+
+Uma Questão Narrativa não representa toda interação entre o Narrador e o Tessitura. Consultar contexto, solicitar detalhes adicionais, executar regras determinísticas, receber resultados mecânicos e compor a Resposta do Narrador ao Jogador podem ocorrer sem criar uma questão. A questão aparece quando o Tessitura precisa governar e auditar uma interpretação, criação ou escolha entre alternativas narrativamente válidas. Uma Resposta do Narrador pode apoiar-se em várias decisões anteriores sem ser, ela própria, uma Questão Narrativa.
+
+Essa fronteira preserva responsabilidades diferentes. O Tessitura formula a questão e seleciona o contexto pertinente; o Narrador fornece a decisão e sua justificativa; uma operação posterior valida e aplica as consequências permitidas. Cânone da História e Estado do Mundo podem fornecer contexto e receber consequências controladas, mas não são modificados diretamente pela resposta à questão.
+
+O primeiro recorte implementado é `BinaryNarrativeQuestion`, uma entidade de domínio com identidade própria (`id`), referência à Intenção relacionada à decisão desse recorte (`intention_id`), enunciado (`prompt`) e contexto inicial (`initial_context`). A referência à Intenção não foi estabelecida como característica universal de toda Questão Narrativa. Também não existe uma referência genérica formada por tipo e identidade do objeto relacionado; as relações necessárias deverão permanecer explícitas nos recortes concretos à medida que forem compreendidas.
+
+O enunciado não aceita texto vazio ou composto apenas por espaços. Os dados da questão são recebidos na construção e expostos por propriedades sem setter; a classe não gera o enunciado nem consulta o contexto.
+
+A questão nasce com `answer` e `justification` iguais a `None`. O método `respond(answer, justification)` recebe uma resposta booleana e um `NarratorJustification`, mantendo ambos na questão. `False` representa uma resposta negativa, não ausência de resposta.
+
+Cada questão aceita uma única resposta. Uma segunda tentativa lança `ValueError` e preserva a resposta e a justificativa originais, inclusive quando a primeira resposta foi `False`. Uma nova decisão exige outra questão. Os testes cobrem respostas positivas e negativas e a rejeição de uma segunda resposta.
+
+Uma pergunta como "A condição ligada ao ritual de Borg continua pertinente após o ritual ter sido impedido?" solicita uma interpretação. Sua resposta não remove a condição nem modifica a configuração da Intenção. A questão guarda apenas a identidade da Intenção relacionada; não verifica a existência dessa Intenção nem executa consequências sobre ela.
+
+### Relações já identificadas
+
+Uma `NarrativeIntention` pode motivar Questões Narrativas em sua avaliação inicial de Intensidade e Pressão, em reavaliações posteriores e na interpretação da pertinência de condições antes da revisão de sua configuração de elegibilidade. Uma resposta de avaliação não seria booleana: seu conteúdo corresponde a Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Na avaliação inicial, esse julgamento é necessário antes de a Intenção estar completamente construída, pois a Intenção já recebe o resultado vigente em seu construtor. Portanto, mesmo quando uma identidade é reservada antecipadamente, a entidade relacionada à questão não precisa existir de forma completa no momento da formulação.
+
+Uma `NarrativePreparation` participa em dois momentos diferentes. Antes de existir, ela pode ser produzida como consequência de uma solicitação criativa relacionada à Intenção elegível; a entidade de origem da questão e a entidade produzida pela resposta não são necessariamente a mesma. Depois de criada, a Preparação pode tornar-se o assunto das decisões discricionárias já descritas para adaptação, Avaliação de Oportunidade e Avaliação de Materialização.
+
+`NarrativeIntensityAndPressureAssessmentRecord` não é o assunto da avaliação: ele registra uma ocorrência concluída. Se a avaliação for solicitada por uma Questão Narrativa, questão e registro representam fatos diferentes. A questão preserva o que foi solicitado e respondido; o registro preserva a identidade da ocorrência, o momento, o disparo, a Intenção avaliada e o resultado. A relação entre ambos ainda não está implementada e deverá evitar que resposta, resultado e justificativa se tornem fontes de verdade independentes e contraditórias.
+
+Os Value Objects envolvidos não se tornam, por isso, proprietários de questões. `NarratorJustification` compõe a resposta; `NarrativeIntensityAndPressureAssessment` pode representar seu conteúdo estruturado; e `NarrativeEligibilityConfiguration` pode ser substituída como consequência posterior de uma decisão. A Avaliação de Elegibilidade permanece fora desse mecanismo porque é uma operação determinística do Tessitura, sem discricionariedade do Narrador.
+
+### Limites da implementação atual
+
+Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, respostas estruturadas além de `bool`, coordenação de questões encadeadas nem relações com Preparações ou registros de avaliação. A justificativa da resposta binária já pertence à questão; as justificativas dos assessments e das preparações existentes permanecem onde estão, sem migração automática neste recorte.
+
 ## Estágios de compromisso narrativo
 
 Uma direção narrativa pode adquirir compromisso com a realidade do jogo progressivamente. Os conceitos descritos aqui não são camadas arquiteturais nem níveis de um único objeto: são conceitos distintos e relacionados.
