@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from .evaluation_trigger_kind import EvaluationTriggerKind
 from .narrative_intensity import NarrativeIntensity
 from .narrative_pressure import NarrativePressure
 from .narrator_justification import NarratorJustification
@@ -10,6 +11,7 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
         self,
         id: UUID,
         intention_id: UUID,
+        trigger: EvaluationTriggerKind,
         prompt: str,
         initial_context: str,
     ) -> None:
@@ -18,6 +20,7 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
 
         self._id = id
         self._intention_id = intention_id
+        self._trigger = trigger
         self._prompt = prompt
         self._initial_context = initial_context
         self._intensity: NarrativeIntensity | None = None
@@ -31,6 +34,10 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
     @property
     def intention_id(self) -> UUID:
         return self._intention_id
+
+    @property
+    def trigger(self) -> EvaluationTriggerKind:
+        return self._trigger
 
     @property
     def prompt(self) -> str:
