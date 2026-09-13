@@ -1,9 +1,9 @@
 from uuid import UUID
 
 from .evaluation_trigger_kind import EvaluationTriggerKind
-from .narrative_intensity import NarrativeIntensity
-from .narrative_pressure import NarrativePressure
-from .narrator_justification import NarratorJustification
+from .narrative_intensity_and_pressure_assessment_result import (
+    NarrativeIntensityAndPressureAssessmentResult,
+)
 
 
 class NarrativeIntensityAndPressureAssessmentQuestion:
@@ -23,9 +23,7 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
         self._trigger = trigger
         self._prompt = prompt
         self._initial_context = initial_context
-        self._intensity: NarrativeIntensity | None = None
-        self._pressure: NarrativePressure | None = None
-        self._justification: NarratorJustification | None = None
+        self._answer: NarrativeIntensityAndPressureAssessmentResult | None = None
 
     @property
     def id(self) -> UUID:
@@ -48,26 +46,14 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
         return self._initial_context
 
     @property
-    def intensity(self) -> NarrativeIntensity | None:
-        return self._intensity
-
-    @property
-    def pressure(self) -> NarrativePressure | None:
-        return self._pressure
-
-    @property
-    def justification(self) -> NarratorJustification | None:
-        return self._justification
+    def answer(self) -> NarrativeIntensityAndPressureAssessmentResult | None:
+        return self._answer
 
     def respond(
         self,
-        intensity: NarrativeIntensity,
-        pressure: NarrativePressure,
-        justification: NarratorJustification,
+        answer: NarrativeIntensityAndPressureAssessmentResult,
     ) -> None:
-        if self._intensity is not None:
+        if self._answer is not None:
             raise ValueError("Narrative question has already been answered")
 
-        self._intensity = intensity
-        self._pressure = pressure
-        self._justification = justification
+        self._answer = answer
