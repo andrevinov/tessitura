@@ -26,13 +26,13 @@
 
 **Pressão Narrativa:** urgência com que o sistema deve procurar uma realização para uma Intenção Narrativa, sem alterar sua Intensidade Narrativa.
 
-**Avaliação de Intensidade e Pressão:** avaliação realizada inteiramente pelo Narrador para estabelecer os valores iniciais de Intensidade Narrativa e Pressão Narrativa de uma Intenção Narrativa, com base no contexto relevante e acompanhada de uma Justificativa do Narrador. Ao receber os dados, Tessitura executa as validações determinísticas programadas, sem julgar a interpretação do Narrador.
+**Avaliação de Intensidade e Pressão:** atividade realizada inteiramente pelo Narrador para estabelecer os valores iniciais de Intensidade Narrativa e Pressão Narrativa de uma Intenção Narrativa, com base no contexto relevante. Ela produz um Assessment de Intensidade e Pressão; ao recebê-lo, Tessitura executa as validações determinísticas programadas, sem julgar a interpretação do Narrador.
 
-**Reavaliação de Intensidade e Pressão:** nova avaliação realizada inteiramente pelo Narrador para reconsiderar a Intensidade Narrativa e a Pressão Narrativa de uma Intenção existente, inclusive quando ela já possui Preparações Narrativas. Cada valor pode aumentar, diminuir ou permanecer igual, sem exigir a mesma variação do outro. Exige uma Justificativa do Narrador e está sujeita às validações determinísticas programadas no Tessitura.
+**Reavaliação de Intensidade e Pressão:** nova avaliação realizada inteiramente pelo Narrador para reconsiderar a Intensidade Narrativa e a Pressão Narrativa de uma Intenção existente, inclusive quando ela já possui Preparações Narrativas. Cada valor pode aumentar, diminuir ou permanecer igual, sem exigir a mesma variação do outro. Ela produz um novo Assessment de Intensidade e Pressão e está sujeita às validações determinísticas programadas no Tessitura.
 
-**Resultado de Avaliação de Intensidade e Pressão:** conjunto imutável dos valores finais de Intensidade Narrativa e Pressão Narrativa e da Justificativa do Narrador. Representa o que foi decidido, não a atividade de avaliar nem variações a aplicar aos valores anteriores.
+**Assessment de Intensidade e Pressão:** decisão estruturada e imutável produzida pelo Narrador, representada por `NarrativeIntensityAndPressureAssessment`. Reúne os valores finais de Intensidade Narrativa e Pressão Narrativa e a Justificativa do Narrador. Quando responde a uma `NarrativeIntensityAndPressureAssessmentQuestion`, ocupa o papel de `answer`; não representa a própria Question nem a atividade de avaliar.
 
-**Resultado Vigente:** resultado de avaliação atualmente aplicado a uma Intenção Narrativa, exposto por `current_assessment`. Cada Intenção mantém um único resultado vigente; uma nova aplicação substitui o conjunto completo, sem modificar o resultado anterior.
+**Assessment Vigente:** Assessment de Intensidade e Pressão atualmente aplicado a uma Intenção Narrativa, exposto por `current_assessment`. Cada Intenção mantém um único Assessment vigente; uma nova aplicação substitui o conjunto completo, sem modificar o anterior.
 
 **Categoria de Disparo de Avaliação:** classificação da origem da avaliação, representada por `EvaluationTriggerKind`: avaliação inicial, limite de tempo, limite de nível, mudança de estado da âncora ou mudança de conhecimento. Nas reavaliações, identifica o tipo de condição determinística cuja detecção cabe ao Tessitura, sem determinar a interpretação do Narrador. A categoria não contém os detalhes da condição concreta e sua representação não implementa o monitoramento dessa condição.
 

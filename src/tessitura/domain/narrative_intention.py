@@ -2,8 +2,8 @@ from uuid import UUID
 
 from .narrative_eligibility_configuration import NarrativeEligibilityConfiguration
 from .narrative_intensity import NarrativeIntensity
-from .narrative_intensity_and_pressure_assessment_result import (
-    NarrativeIntensityAndPressureAssessmentResult,
+from .narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
 )
 from .narrative_pressure import NarrativePressure
 
@@ -13,7 +13,7 @@ class NarrativeIntention:
         self,
         id: UUID,
         direction: str,
-        current_assessment: NarrativeIntensityAndPressureAssessmentResult,
+        current_assessment: NarrativeIntensityAndPressureAssessment,
         eligibility_configuration: NarrativeEligibilityConfiguration,
     ) -> None:
         if not direction.strip():
@@ -37,7 +37,7 @@ class NarrativeIntention:
         return self._eligibility_configuration
 
     @property
-    def current_assessment(self) -> NarrativeIntensityAndPressureAssessmentResult:
+    def current_assessment(self) -> NarrativeIntensityAndPressureAssessment:
         return self._current_assessment
 
     @property
@@ -49,7 +49,7 @@ class NarrativeIntention:
         return self._current_assessment.pressure
 
     def apply_assessment(
-        self, assessment: NarrativeIntensityAndPressureAssessmentResult
+        self, assessment: NarrativeIntensityAndPressureAssessment
     ) -> None:
         self._current_assessment = assessment
 

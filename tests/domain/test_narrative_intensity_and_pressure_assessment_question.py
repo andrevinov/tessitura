@@ -4,17 +4,17 @@ import pytest
 
 from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
 from tessitura.domain.narrative_intensity import NarrativeIntensity
+from tessitura.domain.narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
+)
 from tessitura.domain.narrative_intensity_and_pressure_assessment_question import (
     NarrativeIntensityAndPressureAssessmentQuestion,
-)
-from tessitura.domain.narrative_intensity_and_pressure_assessment_result import (
-    NarrativeIntensityAndPressureAssessmentResult,
 )
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 
 
-def test_assessment_question_keeps_assessment_result_as_its_answer() -> None:
+def test_assessment_question_keeps_assessment_as_its_answer() -> None:
     question_id = UUID(int=1)
     intention_id = UUID(int=2)
     prompt = "How intense and urgent should Borg's revenge be?"
@@ -26,7 +26,7 @@ def test_assessment_question_keeps_assessment_result_as_its_answer() -> None:
         prompt=prompt,
         initial_context=initial_context,
     )
-    answer = NarrativeIntensityAndPressureAssessmentResult(
+    assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(80),
         pressure=NarrativePressure(60),
         justification=NarratorJustification(
@@ -36,9 +36,9 @@ def test_assessment_question_keeps_assessment_result_as_its_answer() -> None:
 
     assert question.answer is None
 
-    question.respond(answer)
+    question.respond(assessment)
 
-    assert question.answer is answer
+    assert question.answer is assessment
     assert question.id == question_id
     assert question.intention_id == intention_id
     assert question.prompt == prompt
@@ -53,18 +53,18 @@ def test_assessment_question_rejects_second_answer_and_preserves_first() -> None
         prompt="How intense and urgent should Borg's revenge be?",
         initial_context="The player injured Borg and escaped.",
     )
-    original_answer = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(80),
         pressure=NarrativePressure(60),
         justification=NarratorJustification(
             "Borg wants severe retaliation and has reason to act soon."
         ),
     )
-    question.respond(original_answer)
+    question.respond(original_assessment)
 
     with pytest.raises(ValueError, match="has already been answered"):
         question.respond(
-            NarrativeIntensityAndPressureAssessmentResult(
+            NarrativeIntensityAndPressureAssessment(
                 intensity=NarrativeIntensity(30),
                 pressure=NarrativePressure(20),
                 justification=NarratorJustification(
@@ -73,7 +73,7 @@ def test_assessment_question_rejects_second_answer_and_preserves_first() -> None
             ),
         )
 
-    assert question.answer is original_answer
+    assert question.answer is original_assessment
 
 
 def test_assessment_question_preserves_its_trigger() -> None:

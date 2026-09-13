@@ -1,8 +1,8 @@
 from uuid import UUID
 
 from .evaluation_trigger_kind import EvaluationTriggerKind
-from .narrative_intensity_and_pressure_assessment_result import (
-    NarrativeIntensityAndPressureAssessmentResult,
+from .narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
 )
 
 
@@ -23,7 +23,7 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
         self._trigger = trigger
         self._prompt = prompt
         self._initial_context = initial_context
-        self._answer: NarrativeIntensityAndPressureAssessmentResult | None = None
+        self._answer: NarrativeIntensityAndPressureAssessment | None = None
 
     @property
     def id(self) -> UUID:
@@ -46,14 +46,14 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
         return self._initial_context
 
     @property
-    def answer(self) -> NarrativeIntensityAndPressureAssessmentResult | None:
+    def answer(self) -> NarrativeIntensityAndPressureAssessment | None:
         return self._answer
 
     def respond(
         self,
-        answer: NarrativeIntensityAndPressureAssessmentResult,
+        assessment: NarrativeIntensityAndPressureAssessment,
     ) -> None:
         if self._answer is not None:
             raise ValueError("Narrative question has already been answered")
 
-        self._answer = answer
+        self._answer = assessment

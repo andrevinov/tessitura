@@ -13,8 +13,8 @@ def apply_answered_narrative_assessment_question(
             "Narrative question belongs to a different narrative intention"
         )
 
-    answer = question.answer
-    if answer is None:
+    assessment = question.answer
+    if assessment is None:
         raise ValueError("Narrative assessment question has not been answered")
 
-    intention.apply_assessment(answer)
+    intention.apply_assessment(assessment)

@@ -18,7 +18,7 @@ Cada questão aceita uma única resposta. Uma segunda tentativa lança `ValueErr
 
 Uma pergunta como "A condição ligada ao ritual de Borg continua pertinente após o ritual ter sido impedido?" solicita uma interpretação. Sua resposta não remove a condição nem modifica a configuração da Intenção. A questão guarda apenas a identidade da Intenção relacionada; não verifica a existência dessa Intenção nem executa consequências sobre ela.
 
-O segundo recorte implementado é `NarrativeIntensityAndPressureAssessmentQuestion`. Ele mantém dados iniciais de identidade, Intenção relacionada, enunciado e contexto e também registra, por meio de `EvaluationTriggerKind`, a categoria do disparo que motivou a avaliação. Como resposta, recebe uma `NarrativeIntensity`, uma `NarrativePressure` e uma `NarratorJustification`. Os três componentes nascem ausentes e permanecem juntos quando a questão é respondida. Uma segunda resposta é rejeitada sem substituir nenhum deles. A questão não constrói um `NarrativeIntensityAndPressureAssessmentResult` nem aplica os valores à Intenção.
+O segundo recorte implementado é `NarrativeIntensityAndPressureAssessmentQuestion`. Ele representa a solicitação de uma Avaliação de Intensidade e Pressão ao Narrador e mantém identidade, Intenção relacionada, enunciado, contexto e, por meio de `EvaluationTriggerKind`, a categoria do disparo que motivou a avaliação. A questão nasce com `answer` igual a `None`. O método `respond(assessment)` recebe um `NarrativeIntensityAndPressureAssessment` e o mantém como resposta. Uma segunda resposta é rejeitada sem substituir o Assessment original. Responder à questão não aplica o Assessment à Intenção.
 
 ### Relações já identificadas
 
@@ -26,11 +26,11 @@ Uma `NarrativeIntention` pode motivar Questões Narrativas em sua avaliação in
 
 Uma `NarrativePreparation` participa em dois momentos diferentes. Antes de existir, ela pode ser produzida como consequência de uma solicitação criativa relacionada à Intenção elegível; a entidade de origem da questão e a entidade produzida pela resposta não são necessariamente a mesma. Depois de criada, a Preparação pode tornar-se o assunto das decisões discricionárias já descritas para adaptação, Avaliação de Oportunidade e Avaliação de Materialização.
 
-Os Value Objects envolvidos não se tornam, por isso, proprietários de questões. `NarratorJustification` compõe a resposta; `NarrativeIntensityAndPressureAssessmentResult` pode representar seu conteúdo estruturado; e `NarrativeEligibilityConfiguration` pode ser substituída como consequência posterior de uma decisão. A Avaliação de Elegibilidade permanece fora desse mecanismo porque é uma operação determinística do Tessitura, sem discricionariedade do Narrador.
+Os Value Objects envolvidos não se tornam, por isso, proprietários de questões. `NarratorJustification` compõe o `NarrativeIntensityAndPressureAssessment` que ocupa o papel de resposta da questão; e `NarrativeEligibilityConfiguration` pode ser substituída como consequência posterior de outra decisão. A Avaliação de Elegibilidade permanece fora desse mecanismo porque é uma operação determinística do Tessitura, sem discricionariedade do Narrador.
 
 ### Limites da implementação atual
 
-Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas nem relações com Preparações. As questões binária e de avaliação mantêm suas justificativas; as justificativas dos assessments e das preparações existentes permanecem onde estão, sem migração automática neste recorte.
+Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas nem relações com Preparações. A questão binária mantém sua justificativa diretamente; na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`.
 
 ## Estágios de compromisso narrativo
 
@@ -69,11 +69,11 @@ Nessas avaliações, a responsabilidade do Tessitura é receber os dados e execu
 
 Avaliação inicial e reavaliação representam momentos distintos da mesma atividade.
 
-#### Resultado da avaliação
+#### Assessment produzido pelo Narrador
 
-`NarrativeIntensityAndPressureAssessmentResult` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa o resultado da avaliação, não o mecanismo que a realiza.
+`NarrativeIntensityAndPressureAssessment` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa a decisão estruturada produzida pelo Narrador, não a atividade de avaliar nem a Question que a solicitou. Dentro da `NarrativeIntensityAndPressureAssessmentQuestion`, esse mesmo objeto ocupa o papel de `answer`.
 
-O resultado contém valores finais, não variações a somar ou subtrair. Os objetos que o compõem rejeitam intensidade ou pressão fora das faixas definidas abaixo e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
+O Assessment contém valores finais, não variações a somar ou subtrair. Os objetos que o compõem rejeitam intensidade ou pressão fora das faixas definidas abaixo e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
 
 #### Escalas de Intensidade e Pressão
 
@@ -88,19 +88,17 @@ O Narrador escolhe os valores dentro dessas faixas. Cabe ao Tessitura rejeitar v
 
 Os limites estão implementados nos Value Objects: `NarrativePressure` rejeita valores fora de 0 a 100 e `NarrativeIntensity` rejeita valores fora de 1 a 100, lançando `ValueError` durante a construção. Os testes cobrem a aceitação dos extremos de cada faixa e a rejeição de valores abaixo do mínimo e acima do máximo.
 
-#### Resultado vigente na Intenção
+#### Assessment vigente na Intenção
 
-`NarrativeIntention` recebe um resultado na construção e o expõe pela propriedade `current_assessment`. As propriedades `intensity` e `pressure` consultam esse resultado, sem manter cópias independentes dos valores.
+`NarrativeIntention` recebe um Assessment na construção e o expõe pela propriedade `current_assessment`. As propriedades `intensity` e `pressure` consultam esse Assessment, sem manter cópias independentes dos valores.
 
-Uma Intenção pode passar por várias avaliações, mas mantém um único resultado vigente. O método `apply_assessment()` substitui o resultado completo, mantendo intensidade, pressão e justificativa da mesma avaliação juntas. Ele não modifica o resultado anterior.
+Uma Intenção pode passar por várias avaliações, mas mantém um único Assessment vigente. O método `apply_assessment()` substitui o Assessment completo, mantendo intensidade, pressão e justificativa da mesma decisão juntas. Ele não modifica o Assessment anterior.
 
 #### Aplicação de uma questão de avaliação respondida
 
-`apply_answered_narrative_assessment_question()` é o primeiro caso de uso que integra uma Questão Narrativa ao estado da Intenção. Ele recebe uma `NarrativeIntention` e uma `NarrativeIntensityAndPressureAssessmentQuestion`, verifica se ambas possuem o mesmo `intention_id` e exige que a questão já tenha recebido Intensidade, Pressão e Justificativa.
+`apply_answered_narrative_assessment_question()` é o primeiro caso de uso que integra uma Questão Narrativa ao estado da Intenção. Ele recebe uma `NarrativeIntention` e uma `NarrativeIntensityAndPressureAssessmentQuestion`, verifica se ambas possuem o mesmo `intention_id` e exige que `question.answer` contenha um Assessment.
 
-Quando essas condições são satisfeitas, o caso de uso constrói um novo `NarrativeIntensityAndPressureAssessmentResult` com os mesmos objetos mantidos na resposta e delega sua aplicação a `NarrativeIntention.apply_assessment()`. Uma questão pendente ou pertencente a outra Intenção é rejeitada antes da substituição, preservando o resultado vigente.
-
-A Justificativa permanece temporariamente tanto na questão quanto no assessment construído porque `NarrativeIntensityAndPressureAssessmentResult` ainda a exige. A questão é a origem da decisão; essa duplicação não estabelece duas decisões diferentes e permanece visível até a migração da responsabilidade.
+Quando essas condições são satisfeitas, o caso de uso delega a aplicação do mesmo `NarrativeIntensityAndPressureAssessment` mantido em `question.answer` a `NarrativeIntention.apply_assessment()`. Uma questão pendente ou pertencente a outra Intenção é rejeitada antes da substituição, preservando o Assessment vigente.
 
 O caso de uso não responde à questão, não persiste informações e não registra o momento da aplicação. Também não impede que a mesma questão respondida seja aplicada mais de uma vez nem registra na própria questão que uma aplicação ocorreu.
 
@@ -122,7 +120,7 @@ O enum identifica somente a categoria. Ele não contém a condição concreta, o
 
 #### Limites da implementação atual
 
-Existem as representações do resultado e das categorias de disparo, além da substituição do resultado vigente na Intenção. Ainda não existem monitoramento de condições, agendamento ou persistência de histórico.
+Existem as representações do Assessment e das categorias de disparo, além da substituição do Assessment vigente na Intenção. Ainda não existem monitoramento de condições, agendamento ou persistência de histórico.
 
 O fornecimento de contexto em níveis de aprofundamento sob demanda continua sendo uma hipótese de apoio ao fluxo, não um mecanismo implementado.
 

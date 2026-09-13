@@ -9,8 +9,8 @@ from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
 from tessitura.domain.narrative_intensity import NarrativeIntensity
-from tessitura.domain.narrative_intensity_and_pressure_assessment_result import (
-    NarrativeIntensityAndPressureAssessmentResult,
+from tessitura.domain.narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
 )
 from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_pressure import NarrativePressure
@@ -28,7 +28,7 @@ def test_narrative_intention_preserves_its_eligibility_configuration() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(7),
             justification=NarratorJustification(
@@ -63,7 +63,7 @@ def test_configuration_revision_preserves_identity_and_previous_values() -> None
         ),
         minimum_score=5,
     )
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(3),
         pressure=NarrativePressure(7),
         justification=NarratorJustification(
@@ -131,7 +131,7 @@ def test_invalid_configuration_revision_preserves_current_configuration(
     intention = NarrativeIntention(
         id=UUID(int=1),
         direction="Borg seeks revenge",
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(7),
             justification=NarratorJustification(
@@ -170,7 +170,7 @@ def test_narrative_intention_keeps_intensity_and_pressure_distinct() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=intensity,
             pressure=pressure,
             justification=NarratorJustification(
@@ -208,7 +208,7 @@ def test_invalid_reassessment_preserves_entire_current_assessment(
     justification_text: str,
     error_message: str,
 ) -> None:
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(2),
         pressure=NarrativePressure(3),
         justification=NarratorJustification(
@@ -228,7 +228,7 @@ def test_invalid_reassessment_preserves_entire_current_assessment(
 
     with pytest.raises(ValueError, match=error_message):
         intention.apply_assessment(
-            NarrativeIntensityAndPressureAssessmentResult(
+            NarrativeIntensityAndPressureAssessment(
                 intensity=NarrativeIntensity(intensity_value),
                 pressure=NarrativePressure(pressure_value),
                 justification=NarratorJustification(justification_text),
@@ -253,7 +253,7 @@ def test_narrative_intention_cannot_change_its_id() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(2),
             pressure=NarrativePressure(3),
             justification=NarratorJustification(
@@ -278,7 +278,7 @@ def test_narrative_intention_rejects_blank_direction() -> None:
                 weighted_conditions=(),
                 minimum_score=0,
             ),
-            current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+            current_assessment=NarrativeIntensityAndPressureAssessment(
                 intensity=NarrativeIntensity(2),
                 pressure=NarrativePressure(3),
                 justification=NarratorJustification(
@@ -298,7 +298,7 @@ def test_narrative_intention_cannot_change_its_direction_directly() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(2),
             pressure=NarrativePressure(3),
             justification=NarratorJustification(
@@ -325,7 +325,7 @@ def test_narrative_intention_cannot_replace_its_pressure_directly() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(2),
             pressure=original_pressure,
             justification=NarratorJustification(
@@ -343,7 +343,7 @@ def test_narrative_intention_cannot_replace_its_pressure_directly() -> None:
 
 
 def test_narrative_intention_cannot_replace_its_current_assessment_directly() -> None:
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(3),
         pressure=NarrativePressure(7),
         justification=NarratorJustification(
@@ -360,7 +360,7 @@ def test_narrative_intention_cannot_replace_its_current_assessment_directly() ->
         ),
         current_assessment=original_assessment,
     )
-    alternative_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    alternative_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(8),
         pressure=NarrativePressure(3),
         justification=NarratorJustification(
@@ -378,7 +378,7 @@ def test_narrative_intention_cannot_replace_its_current_assessment_directly() ->
 
 def test_narrative_intention_applies_reassessment() -> None:
     original_id = UUID(int=1)
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(3),
         pressure=NarrativePressure(7),
         justification=NarratorJustification(
@@ -395,7 +395,7 @@ def test_narrative_intention_applies_reassessment() -> None:
         ),
         current_assessment=original_assessment,
     )
-    new_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    new_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(8),
         pressure=NarrativePressure(3),
         justification=NarratorJustification(

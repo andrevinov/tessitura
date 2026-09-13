@@ -13,11 +13,11 @@ from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
 from tessitura.domain.narrative_intensity import NarrativeIntensity
+from tessitura.domain.narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
+)
 from tessitura.domain.narrative_intensity_and_pressure_assessment_question import (
     NarrativeIntensityAndPressureAssessmentQuestion,
-)
-from tessitura.domain.narrative_intensity_and_pressure_assessment_result import (
-    NarrativeIntensityAndPressureAssessmentResult,
 )
 from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_pressure import NarrativePressure
@@ -25,7 +25,7 @@ from tessitura.domain.narrator_justification import NarratorJustification
 
 
 def test_applies_answered_assessment_question_to_matching_intention() -> None:
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(30),
         pressure=NarrativePressure(20),
         justification=NarratorJustification(
@@ -49,22 +49,22 @@ def test_applies_answered_assessment_question_to_matching_intention() -> None:
         prompt="How intense and urgent should Borg's revenge now be?",
         initial_context="The player injured Borg and escaped.",
     )
-    answer = NarrativeIntensityAndPressureAssessmentResult(
+    assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(80),
         pressure=NarrativePressure(60),
         justification=NarratorJustification(
             "Borg wants severe retaliation and has reason to act soon."
         ),
     )
-    question.respond(answer)
+    question.respond(assessment)
 
     apply_answered_narrative_assessment_question(intention, question)
 
-    assert intention.current_assessment is answer
+    assert intention.current_assessment is assessment
 
 
 def test_rejects_unanswered_assessment_question_without_changing_intention() -> None:
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(30),
         pressure=NarrativePressure(20),
         justification=NarratorJustification(
@@ -96,7 +96,7 @@ def test_rejects_unanswered_assessment_question_without_changing_intention() -> 
 
 
 def test_rejects_assessment_question_for_another_intention() -> None:
-    original_assessment = NarrativeIntensityAndPressureAssessmentResult(
+    original_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(30),
         pressure=NarrativePressure(20),
         justification=NarratorJustification(
@@ -121,7 +121,7 @@ def test_rejects_assessment_question_for_another_intention() -> None:
         initial_context="Relevant knowledge changed.",
     )
     question.respond(
-        NarrativeIntensityAndPressureAssessmentResult(
+        NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(80),
             pressure=NarrativePressure(60),
             justification=NarratorJustification(

@@ -9,8 +9,8 @@ from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
 from tessitura.domain.narrative_intensity import NarrativeIntensity
-from tessitura.domain.narrative_intensity_and_pressure_assessment_result import (
-    NarrativeIntensityAndPressureAssessmentResult,
+from tessitura.domain.narrative_intensity_and_pressure_assessment import (
+    NarrativeIntensityAndPressureAssessment,
 )
 from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_preparation import NarrativePreparation
@@ -27,7 +27,7 @@ def test_narrative_preparation_preserves_its_intention() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
             justification=NarratorJustification(
@@ -57,7 +57,7 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
             justification=NarratorJustification(
@@ -81,7 +81,7 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(2),
             pressure=NarrativePressure(1),
             justification=NarratorJustification(
@@ -105,7 +105,7 @@ def test_narrative_preparation_rejects_blank_description() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
             justification=NarratorJustification(
@@ -135,7 +135,7 @@ def test_narrative_preparation_cannot_change_its_id() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
             justification=NarratorJustification(
@@ -168,7 +168,7 @@ def test_narrative_preparation_cannot_change_its_description_directly() -> None:
             weighted_conditions=(),
             minimum_score=0,
         ),
-        current_assessment=NarrativeIntensityAndPressureAssessmentResult(
+        current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(2),
             justification=NarratorJustification(
