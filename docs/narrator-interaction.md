@@ -66,10 +66,12 @@ As responsabilidades atualmente compreendidas são:
 
 - o **Jogador** determina suas falas, escolhas e intenções;
 - **Tessitura** mantém as fontes de verdade, aplica regras, calcula resultados,
-  identifica lacunas interpretativas, valida decisões e controla alterações do
-  mundo;
-- o **Narrador** resolve as questões interpretativas que lhe forem delegadas e
-  apresenta ao Jogador uma Resposta do Narrador em prosa;
+  identifica lacunas interpretativas, valida solicitações e decisões e controla
+  alterações do mundo;
+- o **Narrador** interpreta as Declarações do Jogador, converte o significado
+  compreendido em solicitações estruturadas ao Tessitura, resolve as questões
+  interpretativas que lhe forem delegadas e apresenta ao Jogador uma Resposta
+  do Narrador em prosa;
 - o **NarrativeFrame** transporta para o Narrador a projeção relevante e
   estruturada de uma Interação.
 
@@ -93,7 +95,13 @@ Narrador produz a Resposta do Narrador
         ↓
 Jogador produz uma Declaração do Jogador
         ↓
-Tessitura identifica a intenção aplicável
+Narrador interpreta a Declaração do Jogador
+        ↓
+Narrador esclarece ambiguidades materiais com o Jogador, quando necessário
+        ↓
+Narrador formula uma solicitação estruturada e aciona o Tessitura
+        ↓
+Tessitura valida a solicitação e identifica as operações e regras aplicáveis
         ↓
 resolução determinística possível
         ↓
@@ -116,9 +124,18 @@ Narrativas poderá, portanto, exigir mais de uma alternância entre Tessitura e
 Narrador antes que o estado necessário ao próximo `NarrativeFrame` esteja
 consolidado.
 
-Identificar a intenção aplicável na linguagem livre do Jogador não significa
-que o Tessitura já possua uma forma definida de normalização. Essa fronteira
-permanece em investigação.
+O Narrador realiza a interpretação semântica porque é ele quem recebe a
+linguagem livre do Jogador e aciona o Tessitura. Essa interpretação não lhe dá
+autoridade para redefinir a vontade do Jogador. Quando uma ambiguidade puder
+alterar materialmente a ação, o alvo, as condições ou as consequências
+pretendidas, o Narrador deverá pedir esclarecimento ao Jogador antes de formar
+a solicitação estruturada.
+
+O Tessitura não interpreta diretamente a linguagem livre nesse ciclo. Ele
+recebe a solicitação estruturada, verifica sua validade diante do estado atual
+e identifica as operações e regras aplicáveis. A forma concreta dessa
+solicitação e o mecanismo usado pelo Narrador para produzi-la permanecem em
+investigação.
 
 ## Estado do Mundo e NarrativeFrame
 
@@ -309,7 +326,7 @@ Conceitualmente:
 ```text
 novo_estado = transição(
     estado_anterior,
-    intenção_do_jogador,
+    solicitação_estruturada,
     resultados_mecânicos,
     respostas_narrativas,
     versão_das_regras,
@@ -328,7 +345,7 @@ Tessitura ao mesmo novo estado e ao mesmo frame lógico, desde que também sejam
 iguais:
 
 - o estado inicial;
-- a intenção normalizada do Jogador;
+- a solicitação estruturada produzida a partir da Declaração do Jogador;
 - a versão das regras;
 - os resultados aleatórios ou a semente utilizada;
 - as fontes externas relevantes;
@@ -489,7 +506,8 @@ Este modelo ainda não determina:
 
 - a representação concreta do `NarrativeFrame`;
 - quais de suas dimensões serão obrigatórias;
-- como a Declaração do Jogador será convertida em intenção estruturada;
+- como o Narrador converterá a Declaração do Jogador em uma solicitação
+  estruturada ao Tessitura;
 - como Questões Narrativas encadeadas serão coordenadas;
 - como respostas narrativas serão representadas de maneira canônica;
 - como traços descritivos serão armazenados e selecionados;
