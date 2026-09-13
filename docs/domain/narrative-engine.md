@@ -18,19 +18,19 @@ Cada questão aceita uma única resposta. Uma segunda tentativa lança `ValueErr
 
 Uma pergunta como "A condição ligada ao ritual de Borg continua pertinente após o ritual ter sido impedido?" solicita uma interpretação. Sua resposta não remove a condição nem modifica a configuração da Intenção. A questão guarda apenas a identidade da Intenção relacionada; não verifica a existência dessa Intenção nem executa consequências sobre ela.
 
+O segundo recorte implementado é `NarrativeIntensityAndPressureAssessmentQuestion`. Ele mantém dados iniciais de identidade, Intenção relacionada, enunciado e contexto e também registra, por meio de `EvaluationTriggerKind`, a categoria do disparo que motivou a avaliação. Como resposta, recebe uma `NarrativeIntensity`, uma `NarrativePressure` e uma `NarratorJustification`. Os três componentes nascem ausentes e permanecem juntos quando a questão é respondida. Uma segunda resposta é rejeitada sem substituir nenhum deles. A questão não constrói um `NarrativeIntensityAndPressureAssessmentResult` nem aplica os valores à Intenção.
+
 ### Relações já identificadas
 
-Uma `NarrativeIntention` pode motivar Questões Narrativas em sua avaliação inicial de Intensidade e Pressão, em reavaliações posteriores e na interpretação da pertinência de condições antes da revisão de sua configuração de elegibilidade. Uma resposta de avaliação não seria booleana: seu conteúdo corresponde a Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Na avaliação inicial, esse julgamento é necessário antes de a Intenção estar completamente construída, pois a Intenção já recebe o resultado vigente em seu construtor. Portanto, mesmo quando uma identidade é reservada antecipadamente, a entidade relacionada à questão não precisa existir de forma completa no momento da formulação.
+Uma `NarrativeIntention` pode motivar Questões Narrativas em sua avaliação inicial de Intensidade e Pressão, em reavaliações posteriores e na interpretação da pertinência de condições antes da revisão de sua configuração de elegibilidade. Uma resposta de avaliação não é booleana: seu conteúdo corresponde a Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Na avaliação inicial, esse julgamento é necessário antes de a Intenção estar completamente construída, pois a Intenção já recebe o resultado vigente em seu construtor. Portanto, mesmo quando uma identidade é reservada antecipadamente, a entidade relacionada à questão não precisa existir de forma completa no momento da formulação.
 
 Uma `NarrativePreparation` participa em dois momentos diferentes. Antes de existir, ela pode ser produzida como consequência de uma solicitação criativa relacionada à Intenção elegível; a entidade de origem da questão e a entidade produzida pela resposta não são necessariamente a mesma. Depois de criada, a Preparação pode tornar-se o assunto das decisões discricionárias já descritas para adaptação, Avaliação de Oportunidade e Avaliação de Materialização.
 
-`NarrativeIntensityAndPressureAssessmentRecord` não é o assunto da avaliação: ele registra uma ocorrência concluída. Se a avaliação for solicitada por uma Questão Narrativa, questão e registro representam fatos diferentes. A questão preserva o que foi solicitado e respondido; o registro preserva a identidade da ocorrência, o momento, o disparo, a Intenção avaliada e o resultado. A relação entre ambos ainda não está implementada e deverá evitar que resposta, resultado e justificativa se tornem fontes de verdade independentes e contraditórias.
-
-Os Value Objects envolvidos não se tornam, por isso, proprietários de questões. `NarratorJustification` compõe a resposta; `NarrativeIntensityAndPressureAssessment` pode representar seu conteúdo estruturado; e `NarrativeEligibilityConfiguration` pode ser substituída como consequência posterior de uma decisão. A Avaliação de Elegibilidade permanece fora desse mecanismo porque é uma operação determinística do Tessitura, sem discricionariedade do Narrador.
+Os Value Objects envolvidos não se tornam, por isso, proprietários de questões. `NarratorJustification` compõe a resposta; `NarrativeIntensityAndPressureAssessmentResult` pode representar seu conteúdo estruturado; e `NarrativeEligibilityConfiguration` pode ser substituída como consequência posterior de uma decisão. A Avaliação de Elegibilidade permanece fora desse mecanismo porque é uma operação determinística do Tessitura, sem discricionariedade do Narrador.
 
 ### Limites da implementação atual
 
-Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, respostas estruturadas além de `bool`, coordenação de questões encadeadas nem relações com Preparações ou registros de avaliação. A justificativa da resposta binária já pertence à questão; as justificativas dos assessments e das preparações existentes permanecem onde estão, sem migração automática neste recorte.
+Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas nem relações com Preparações. As questões binária e de avaliação mantêm suas justificativas; as justificativas dos assessments e das preparações existentes permanecem onde estão, sem migração automática neste recorte.
 
 ## Estágios de compromisso narrativo
 
@@ -65,13 +65,13 @@ A Avaliação de Intensidade e Pressão estabelece os valores iniciais de uma In
 
 Intensidade e Pressão podem aumentar, diminuir ou permanecer iguais em uma reavaliação, inclusive depois que a Intenção tiver originado Preparações Narrativas. As duas dimensões não precisam variar juntas nem no mesmo sentido. A passagem do tempo, mudanças nos recursos ou outros acontecimentos não determinam por si mesmos uma direção obrigatória de alteração. O Narrador deve escolher uma interpretação coerente com os personagens, as Âncoras Narrativas e o Cânone, sem pressupor uma única reação narrativamente correta.
 
-Nessas avaliações, a responsabilidade do Tessitura é receber os dados e executar as validações determinísticas programadas. Tessitura não julga a interpretação do Narrador nem calcula qual reação narrativa deveria decorrer dos acontecimentos. A aplicação e o registro dos valores são operações distintas da avaliação narrativa.
+Nessas avaliações, a responsabilidade do Tessitura é receber os dados e executar as validações determinísticas programadas. Tessitura não julga a interpretação do Narrador nem calcula qual reação narrativa deveria decorrer dos acontecimentos. A aplicação dos valores é uma operação distinta da avaliação narrativa.
 
 Avaliação inicial e reavaliação representam momentos distintos da mesma atividade.
 
 #### Resultado da avaliação
 
-`NarrativeIntensityAndPressureAssessment` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa o resultado da avaliação, não o mecanismo que a realiza.
+`NarrativeIntensityAndPressureAssessmentResult` é o Value Object imutável que reúne Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Ele representa o resultado da avaliação, não o mecanismo que a realiza.
 
 O resultado contém valores finais, não variações a somar ou subtrair. Os objetos que o compõem rejeitam intensidade ou pressão fora das faixas definidas abaixo e justificativa vazia ou composta apenas por espaços. Essas validações não julgam a coerência narrativa da decisão.
 
@@ -92,29 +92,17 @@ Os limites estão implementados nos Value Objects: `NarrativePressure` rejeita v
 
 `NarrativeIntention` recebe um resultado na construção e o expõe pela propriedade `current_assessment`. As propriedades `intensity` e `pressure` consultam esse resultado, sem manter cópias independentes dos valores.
 
-Uma Intenção pode passar por várias avaliações, mas mantém um único resultado vigente. O método `apply_assessment()` substitui o resultado completo, mantendo intensidade, pressão e justificativa da mesma avaliação juntas. Ele não modifica o resultado anterior nem cria um registro histórico automaticamente.
+Uma Intenção pode passar por várias avaliações, mas mantém um único resultado vigente. O método `apply_assessment()` substitui o resultado completo, mantendo intensidade, pressão e justificativa da mesma avaliação juntas. Ele não modifica o resultado anterior.
 
-#### Registro de avaliação
+#### Aplicação de uma questão de avaliação respondida
 
-`NarrativeIntensityAndPressureAssessmentRecord` representa uma ocorrência concluída de avaliação. É uma entidade imutável: resultados iguais podem pertencer a ocorrências distintas. Seus campos são:
+`apply_answered_narrative_assessment_question()` é o primeiro caso de uso que integra uma Questão Narrativa ao estado da Intenção. Ele recebe uma `NarrativeIntention` e uma `NarrativeIntensityAndPressureAssessmentQuestion`, verifica se ambas possuem o mesmo `intention_id` e exige que a questão já tenha recebido Intensidade, Pressão e Justificativa.
 
-- `id`: identidade do registro;
-- `intention_id`: identidade da Intenção avaliada;
-- `evaluated_at`: data e hora reais da avaliação, obrigatoriamente com fuso horário, distintas do tempo ficcional da campanha;
-- `trigger`: categoria do disparo;
-- `assessment`: resultado da avaliação, incluindo a justificativa do Narrador.
+Quando essas condições são satisfeitas, o caso de uso constrói um novo `NarrativeIntensityAndPressureAssessmentResult` com os mesmos objetos mantidos na resposta e delega sua aplicação a `NarrativeIntention.apply_assessment()`. Uma questão pendente ou pertencente a outra Intenção é rejeitada antes da substituição, preservando o resultado vigente.
 
-Vários registros podem se referir à mesma Intenção por `intention_id`. O registro é específico para avaliações de intensidade e pressão; ainda não existe um registro genérico para os outros tipos de avaliação.
+A Justificativa permanece temporariamente tanto na questão quanto no assessment construído porque `NarrativeIntensityAndPressureAssessmentResult` ainda a exige. A questão é a origem da decisão; essa duplicação não estabelece duas decisões diferentes e permanece visível até a migração da responsabilidade.
 
-Criar um registro não aplica seu resultado à Intenção. Da mesma forma, aplicar um resultado não o registra. Um registro de avaliação, isoladamente, não comprova que seu resultado foi aplicado.
-
-#### Aplicação de uma avaliação registrada
-
-`apply_recorded_narrative_assessment()` é um caso de uso implementado como função na camada de aplicação. Ele recebe uma Intenção e um registro já construídos, verifica se `record.intention_id` corresponde a `intention.id` e delega a substituição do resultado vigente a `NarrativeIntention.apply_assessment()`.
-
-Um registro de outra Intenção é rejeitado com `ValueError` antes de qualquer substituição, preservando integralmente o resultado vigente. Quando a correspondência é válida, `current_assessment` passa a referenciar exatamente o resultado do registro recebido.
-
-Em aplicações sucessivas, a Intenção fica com o último resultado aplicado; os registros anteriores preservam seus resultados e justificativas. O caso de uso não cria nem salva registros, não mantém uma coleção histórica e não verifica a ordem cronológica das avaliações. Aplicar um registro não significa persistir esse registro.
+O caso de uso não responde à questão, não persiste informações e não registra o momento da aplicação. Também não impede que a mesma questão respondida seja aplicada mais de uma vez nem registra na própria questão que uma aplicação ocorreu.
 
 #### Categorias de disparo
 
@@ -134,7 +122,7 @@ O enum identifica somente a categoria. Ele não contém a condição concreta, o
 
 #### Limites da implementação atual
 
-Existem as representações do resultado, do registro e das categorias de disparo, além da substituição do resultado vigente na Intenção e do caso de uso que aplica o resultado de um registro correspondente. Ainda não existem monitoramento de condições, agendamento, persistência de histórico ou coordenação automática entre criar um registro e aplicar uma avaliação.
+Existem as representações do resultado e das categorias de disparo, além da substituição do resultado vigente na Intenção. Ainda não existem monitoramento de condições, agendamento ou persistência de histórico.
 
 O fornecimento de contexto em níveis de aprofundamento sob demanda continua sendo uma hipótese de apoio ao fluxo, não um mecanismo implementado.
 
