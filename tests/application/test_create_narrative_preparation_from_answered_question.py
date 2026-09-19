@@ -54,7 +54,6 @@ def test_ineligible_intention_cannot_produce_narrative_preparation() -> None:
     question = NarrativePreparationCreationQuestion(
         id=UUID(int=2),
         intention_id=intention.id,
-        prompt="How should Borg's revenge take concrete form?",
         initial_context="Borg has not reached the required narrative pressure.",
     )
     question.respond(
@@ -97,7 +96,6 @@ def test_reassessment_allows_narrative_preparation_creation() -> None:
         id=UUID(int=2),
         intention_id=intention.id,
         trigger=EvaluationTriggerKind.ANCHOR_STATE_CHANGED,
-        prompt="How intense and urgent should Borg's revenge now be?",
         initial_context="The player injured Borg and escaped.",
     )
     reassessment = NarrativeIntensityAndPressureAssessment(
@@ -115,7 +113,6 @@ def test_reassessment_allows_narrative_preparation_creation() -> None:
     preparation_question = NarrativePreparationCreationQuestion(
         id=UUID(int=3),
         intention_id=intention.id,
-        prompt="How should Borg's revenge take concrete form?",
         initial_context="Borg now has enough urgency to prepare a retaliation.",
     )
     preparation_justification = NarratorJustification(

@@ -50,7 +50,6 @@ def test_reassessment_can_make_narrative_intention_eligible() -> None:
         id=UUID(int=2),
         intention_id=intention.id,
         trigger=EvaluationTriggerKind.ANCHOR_STATE_CHANGED,
-        prompt="How intense and urgent should Borg's revenge now be?",
         initial_context="The player injured Borg and escaped.",
     )
     reassessment = NarrativeIntensityAndPressureAssessment(

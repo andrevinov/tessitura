@@ -46,7 +46,6 @@ def test_applies_answered_assessment_question_to_matching_intention() -> None:
         id=UUID(int=2),
         intention_id=UUID(int=1),
         trigger=EvaluationTriggerKind.ANCHOR_STATE_CHANGED,
-        prompt="How intense and urgent should Borg's revenge now be?",
         initial_context="The player injured Borg and escaped.",
     )
     assessment = NarrativeIntensityAndPressureAssessment(
@@ -85,7 +84,6 @@ def test_rejects_unanswered_assessment_question_without_changing_intention() -> 
         id=UUID(int=2),
         intention_id=UUID(int=1),
         trigger=EvaluationTriggerKind.TIME_THRESHOLD_REACHED,
-        prompt="How intense and urgent should Borg's revenge now be?",
         initial_context="The configured time threshold was reached.",
     )
 
@@ -117,7 +115,6 @@ def test_rejects_assessment_question_for_another_intention() -> None:
         id=UUID(int=2),
         intention_id=UUID(int=3),
         trigger=EvaluationTriggerKind.KNOWLEDGE_CHANGED,
-        prompt="How intense and urgent should this intention now be?",
         initial_context="Relevant knowledge changed.",
     )
     question.respond(
