@@ -12,16 +12,11 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
         id: UUID,
         intention_id: UUID,
         trigger: EvaluationTriggerKind,
-        prompt: str,
         initial_context: str,
     ) -> None:
-        if not prompt.strip():
-            raise ValueError("Narrative question prompt cannot be blank")
-
         self._id = id
         self._intention_id = intention_id
         self._trigger = trigger
-        self._prompt = prompt
         self._initial_context = initial_context
         self._answer: NarrativeIntensityAndPressureAssessment | None = None
 
@@ -36,10 +31,6 @@ class NarrativeIntensityAndPressureAssessmentQuestion:
     @property
     def trigger(self) -> EvaluationTriggerKind:
         return self._trigger
-
-    @property
-    def prompt(self) -> str:
-        return self._prompt
 
     @property
     def initial_context(self) -> str:

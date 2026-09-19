@@ -12,6 +12,8 @@
 
 **Resposta do Narrador:** mensagem que relata as consequências já produzidas, as ações de NPCs e as condições relevantes do mundo, conduzindo a narrativa até o próximo ponto de interação.
 
+**Questão Narrativa:** solicitação estruturada de uma decisão interpretativa ou criativa ao Narrador. Seu tipo concreto identifica a operação e a forma esperada da resposta; ela transporta contexto, mas não exige um enunciado em prosa. Responder à questão e aplicar suas consequências são operações distintas.
+
 **Interação:** troca composta por uma declaração e pela resposta correspondente entre Jogador e Narrador.
 
 **Avanço narrativo:** progressão ocorrida entre dois pontos de interação. Pode abranger um turno, vários turnos, minutos, horas ou dias de tempo ficcional.

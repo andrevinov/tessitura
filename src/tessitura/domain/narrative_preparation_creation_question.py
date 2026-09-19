@@ -8,15 +8,10 @@ class NarrativePreparationCreationQuestion:
         self,
         id: UUID,
         intention_id: UUID,
-        prompt: str,
         initial_context: str,
     ) -> None:
-        if not prompt.strip():
-            raise ValueError("Narrative question prompt cannot be blank")
-
         self._id = id
         self._intention_id = intention_id
-        self._prompt = prompt
         self._initial_context = initial_context
         self._answer: str | None = None
         self._justification: NarratorJustification | None = None
@@ -28,10 +23,6 @@ class NarrativePreparationCreationQuestion:
     @property
     def intention_id(self) -> UUID:
         return self._intention_id
-
-    @property
-    def prompt(self) -> str:
-        return self._prompt
 
     @property
     def initial_context(self) -> str:

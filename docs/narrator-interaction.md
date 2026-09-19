@@ -311,6 +311,22 @@ mesma decisão, enquanto textos parecidos podem esconder decisões diferentes.
 É o significado estruturado validado, e não a redação livre isolada, que deverá
 alimentar a transição seguinte.
 
+A questão também é estruturada e não precisa conter um enunciado em prosa. Seu
+tipo concreto define qual decisão está pendente, quais dados se relacionam a
+ela e qual resposta pode ser recebida. O contexto continua necessário para
+fundamentar a decisão, mas não precisa repetir a operação em forma de pergunta.
+
+Dentro do domínio, a classe concreta distingue os tipos de questão. Um contrato
+externo que transporte diferentes tipos por um mesmo canal deverá serializar
+essa distinção por meio de um discriminador como `kind`. O schema da ferramenta
+ou operação define a resposta esperada. Assim, nem `kind` nem uma descrição do
+schema precisam ser duplicados como campos nas entidades atuais.
+
+`initial_context` permanece textual nos recortes implementados. Ele registra os
+dados apresentados ao Narrador e não substitui o futuro recorte estruturado do
+Cânone e do Estado do Mundo. A forma desse contexto deverá emergir quando essas
+fontes existirem; não será antecipada como um objeto genérico neste momento.
+
 Uma resposta narrativa também poderá criar a necessidade de outra questão. O
 novo `NarrativeFrame` só deverá ser formado quando as lacunas necessárias ao
 próximo ponto de interação estiverem suficientemente resolvidas.

@@ -2,35 +2,35 @@
 
 ## Questões Narrativas
 
-A Questão Narrativa é a unidade acordada para solicitar a participação interpretativa ou criativa do Narrador. O Tessitura apresenta um enunciado e contexto; o Narrador responde e justifica sua decisão na questão. Responder e aplicar as consequências são operações distintas. Esse modelo orienta a evolução do motor, mas ainda não substitui todos os fluxos existentes.
+A Questão Narrativa é a unidade estruturada para solicitar a participação interpretativa ou criativa do Narrador. O tipo concreto da questão informa qual decisão está pendente e qual forma de resposta é aceita; a questão não contém um enunciado em prosa. O Narrador recebe os dados pertinentes, responde e justifica sua decisão. Responder e aplicar as consequências são operações distintas.
 
 Uma Questão Narrativa não representa toda interação entre o Narrador e o Tessitura. Consultar contexto, solicitar detalhes adicionais, executar regras determinísticas, receber resultados mecânicos e compor a Resposta do Narrador ao Jogador podem ocorrer sem criar uma questão. A questão aparece quando o Tessitura precisa governar e auditar uma interpretação, criação ou escolha entre alternativas narrativamente válidas. Uma Resposta do Narrador pode apoiar-se em várias decisões anteriores sem ser, ela própria, uma Questão Narrativa.
 
-Essa fronteira preserva responsabilidades diferentes. O Tessitura formula a questão e seleciona o contexto pertinente; o Narrador fornece a decisão e sua justificativa; uma operação posterior valida e aplica as consequências permitidas. Cânone da História e Estado do Mundo podem fornecer contexto e receber consequências controladas, mas não são modificados diretamente pela resposta à questão.
+Essa fronteira preserva responsabilidades diferentes. O Tessitura identifica a decisão necessária, cria o tipo específico de questão e seleciona o contexto pertinente; o Narrador fornece a decisão e sua justificativa; uma operação posterior valida e aplica as consequências permitidas. Cânone da História e Estado do Mundo podem fornecer contexto e receber consequências controladas, mas não são modificados diretamente pela resposta à questão.
 
-O primeiro recorte implementado é `BinaryNarrativeQuestion`, uma entidade de domínio com identidade própria (`id`), referência à Intenção relacionada à decisão desse recorte (`intention_id`), enunciado (`prompt`) e contexto inicial (`initial_context`). A referência à Intenção não foi estabelecida como característica universal de toda Questão Narrativa. Também não existe uma referência genérica formada por tipo e identidade do objeto relacionado; as relações necessárias deverão permanecer explícitas nos recortes concretos à medida que forem compreendidas.
+As duas questões implementadas são específicas. `NarrativeIntensityAndPressureAssessmentQuestion` solicita um `NarrativeIntensityAndPressureAssessment`; `NarrativePreparationCreationQuestion` solicita a descrição e a Justificativa do Narrador necessárias para propor uma Preparação. A classe concreta fornece a semântica que antes dependeria de uma frase livre.
 
-O enunciado não aceita texto vazio ou composto apenas por espaços. Os dados da questão são recebidos na construção e expostos por propriedades sem setter; a classe não gera o enunciado nem consulta o contexto.
+Ambas possuem identidade própria (`id`), referência explícita à Intenção (`intention_id`) e contexto inicial (`initial_context`). O contexto permanece como texto na implementação atual porque ainda não existem Cânone, Estado do Mundo ou referências contextuais estruturadas capazes de substituí-lo. Contexto e enunciado exercem responsabilidades diferentes: o contexto fornece dados para decidir; um enunciado repetiria a operação já definida pelo tipo da questão.
 
-A questão nasce com `answer` e `justification` iguais a `None`. O método `respond(answer, justification)` recebe uma resposta booleana e um `NarratorJustification`, mantendo ambos na questão. `False` representa uma resposta negativa, não ausência de resposta.
+`NarrativeIntensityAndPressureAssessmentQuestion` também mantém, por meio de `EvaluationTriggerKind`, a categoria do disparo que motivou a avaliação. Ela nasce com `answer` igual a `None`. O método `respond(assessment)` recebe um `NarrativeIntensityAndPressureAssessment` e o mantém como resposta. Uma segunda resposta é rejeitada sem substituir o Assessment original. Responder à questão não aplica o Assessment à Intenção.
 
-Cada questão aceita uma única resposta. Uma segunda tentativa lança `ValueError` e preserva a resposta e a justificativa originais, inclusive quando a primeira resposta foi `False`. Uma nova decisão exige outra questão. Os testes cobrem respostas positivas e negativas e a rejeição de uma segunda resposta.
+`NarrativePreparationCreationQuestion` nasce com `answer` e `justification` iguais a `None`. Seu método `respond(answer, justification)` mantém a descrição proposta e o `NarratorJustification`. A questão rejeita uma segunda resposta e preserva a descrição e a justificativa originais; esse comportamento é protegido por teste.
 
-Uma pergunta como "A condição ligada ao ritual de Borg continua pertinente após o ritual ter sido impedido?" solicita uma interpretação. Sua resposta não remove a condição nem modifica a configuração da Intenção. A questão guarda apenas a identidade da Intenção relacionada; não verifica a existência dessa Intenção nem executa consequências sobre ela.
+`BinaryNarrativeQuestion` foi removida. Ela originalmente reunia uma resposta booleana, uma justificativa e um enunciado livre, mas `bool` e `intention_id` não identificavam qual proposição estava sendo afirmada ou negada. Sem o enunciado, a entidade perdia seu significado. Uma futura decisão binária deverá surgir como questão específica, com tipo e relações estruturadas que expressem a decisão concreta.
 
-O segundo recorte implementado é `NarrativeIntensityAndPressureAssessmentQuestion`. Ele representa a solicitação de uma Avaliação de Intensidade e Pressão ao Narrador e mantém identidade, Intenção relacionada, enunciado, contexto e, por meio de `EvaluationTriggerKind`, a categoria do disparo que motivou a avaliação. A questão nasce com `answer` igual a `None`. O método `respond(assessment)` recebe um `NarrativeIntensityAndPressureAssessment` e o mantém como resposta. Uma segunda resposta é rejeitada sem substituir o Assessment original. Responder à questão não aplica o Assessment à Intenção.
+Dentro do domínio, o tipo Python concreto distingue as operações. Quando uma questão for transportada por um contrato externo comum, o adaptador precisará representá-la com um discriminador como `kind`. Esse discriminador pertence ao DTO ou documento serializado; não foi adicionado às entidades atuais e ainda não existe implementação desse contrato. O schema da operação externa deverá expressar a forma esperada da resposta, sem duplicá-la em um campo da questão.
 
 ### Relações já identificadas
 
-Uma `NarrativeIntention` pode motivar Questões Narrativas em sua avaliação inicial de Intensidade e Pressão, em reavaliações posteriores e na interpretação da pertinência de condições antes da revisão de sua configuração de elegibilidade. Uma resposta de avaliação não é booleana: seu conteúdo corresponde a Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Na avaliação inicial, esse julgamento é necessário antes de a Intenção estar completamente construída, pois a Intenção já recebe o resultado vigente em seu construtor. Portanto, mesmo quando uma identidade é reservada antecipadamente, a entidade relacionada à questão não precisa existir de forma completa no momento da formulação.
+Uma `NarrativeIntention` pode motivar Questões Narrativas em sua avaliação inicial de Intensidade e Pressão e em reavaliações posteriores. Uma resposta de avaliação não é booleana: seu conteúdo corresponde a Intensidade Narrativa, Pressão Narrativa e Justificativa do Narrador. Na avaliação inicial, esse julgamento é necessário antes de a Intenção estar completamente construída, pois a Intenção já recebe o resultado vigente em seu construtor. Portanto, mesmo quando uma identidade é reservada antecipadamente, a entidade relacionada à questão não precisa existir de forma completa no momento da criação da questão.
 
-Uma `NarrativePreparation` participa em dois momentos diferentes. Antes de existir, ela pode ser produzida como consequência de uma solicitação criativa relacionada à Intenção elegível; a entidade de origem da questão e a entidade produzida pela resposta não são necessariamente a mesma. Depois de criada, a Preparação pode tornar-se o assunto das decisões discricionárias já descritas para adaptação, Avaliação de Oportunidade e Avaliação de Materialização.
+Uma `NarrativePreparation` pode ser produzida como consequência de uma `NarrativePreparationCreationQuestion` respondida para uma Intenção elegível. A questão mantém a decisão criativa; o caso de uso posterior valida e constrói a nova entidade. Depois de criada, a Preparação pode tornar-se o assunto de futuras decisões discricionárias de adaptação, Avaliação de Oportunidade e Avaliação de Materialização.
 
 Os Value Objects envolvidos não se tornam, por isso, proprietários de questões. `NarratorJustification` compõe o `NarrativeIntensityAndPressureAssessment` que ocupa o papel de resposta da questão; e `NarrativeEligibilityConfiguration` pode ser substituída como consequência posterior de outra decisão. A Avaliação de Elegibilidade permanece fora desse mecanismo porque é uma operação determinística do Tessitura, sem discricionariedade do Narrador.
 
 ### Limites da implementação atual
 
-Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas nem relações com Preparações. A questão binária mantém sua justificativa diretamente; na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`.
+Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas, DTO serializado com `kind` nem adaptador que apresente questões ao Narrador. Na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`; na questão de criação, ela permanece ao lado da descrição proposta.
 
 ## Estágios de compromisso narrativo
 
@@ -211,9 +211,9 @@ Com ambas as sequências vazias, a função lança `ValueError`, inclusive quand
 
 Os testes cobrem bloqueio obrigatório apesar de pontuação suficiente, pontuação abaixo, igual e acima do limite, ausência de contribuição de condições falsas, rejeição de configurações negativas e de ausência completa de condições, além da avaliação com uma única categoria de condições.
 
-`NarrativeIntention` já exige uma `NarrativeEligibilityConfiguration` com condições cadastradas. Ainda não existe uma operação que percorra essa configuração, verifique todas as condições e encaminhe seus resultados a `evaluate_narrative_eligibility()`. A função permanece independente da configuração: rejeita a ausência completa de resultados, mas não confere se uma lista parcialmente preenchida contém todas as condições esperadas para a Intenção.
+`evaluate_narrative_intention_eligibility()` é a operação de aplicação que conecta a Intenção a essa regra pura. Ela percorre todas as condições da configuração vigente, verifica cada uma contra a Pressão Narrativa atual, preserva os pesos das condições ponderadas e encaminha os resultados completos a `evaluate_narrative_eligibility()`.
 
-Essa função não consulta o mundo, não acompanha mudanças, não modifica a Intenção e não cria Preparações. A obtenção dos dados, as demais condições concretas, os mapas e a identificação das Intenções afetadas permanecem pendentes. O limite padrão de pressão 50 não é aplicado por essa função: comparar pressão e limite pertence a `MinimumNarrativePressureCondition.is_satisfied_by()`, cuja verificação é anterior à combinação dos resultados.
+Nenhuma das duas funções consulta o mundo, acompanha mudanças, modifica a Intenção ou cria Preparações. A obtenção dos dados, as demais condições concretas, os mapas e a identificação das Intenções afetadas permanecem pendentes. O limite padrão de pressão 50 é aplicado por `MinimumNarrativePressureCondition.is_satisfied_by()` durante a operação de aplicação; a função pura de combinação continua desconhecendo esse limite.
 
 ### Preparação Narrativa
 
@@ -230,6 +230,14 @@ Para uma Intenção pequena, é provável que apenas uma de suas Preparações a
 Uma Preparação não altera por si mesma o Cânone da História.
 
 A criação de uma Preparação é uma decisão criativa do Narrador. Cada Preparação criada deve conter uma Justificativa do Narrador que explique brevemente como aquela forma realiza a direção da Intenção, respeita suas Âncoras Narrativas e corresponde à Intensidade Narrativa pretendida.
+
+#### Criação a partir de uma questão respondida
+
+`NarrativePreparationCreationQuestion` representa a solicitação estruturada dessa decisão criativa. Seu tipo informa que a resposta esperada é uma descrição de Preparação acompanhada de Justificativa do Narrador. Ela mantém `id`, `intention_id`, `initial_context`, `answer` e `justification`; não contém enunciado em prosa e não cria a Preparação ao ser respondida.
+
+`create_narrative_preparation_from_answered_question()` recebe um identificador reservado para a nova Preparação, a Intenção e a questão. O caso de uso exige que a questão pertença à Intenção, esteja respondida e que a Intenção esteja elegível no momento da aplicação. Quando essas condições são satisfeitas, cria e retorna uma `NarrativePreparation` com a mesma Intenção, descrição e justificativa da decisão.
+
+Uma questão respondida não supera uma falha de elegibilidade. O teste funcional também demonstra o caminho positivo completo atualmente disponível: uma reavaliação eleva a Pressão Narrativa, torna a Intenção elegível, permite responder à questão criativa e resulta em uma Preparação. A Preparação continua fora do Cânone e ainda não existe Materialização.
 
 ### Oportunidade Narrativa
 
