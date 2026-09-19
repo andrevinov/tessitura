@@ -17,13 +17,11 @@ from tessitura.domain.narrator_justification import NarratorJustification
 def test_assessment_question_keeps_assessment_as_its_answer() -> None:
     question_id = UUID(int=1)
     intention_id = UUID(int=2)
-    prompt = "How intense and urgent should Borg's revenge be?"
     initial_context = "The player injured Borg and escaped."
     question = NarrativeIntensityAndPressureAssessmentQuestion(
         id=question_id,
         intention_id=intention_id,
         trigger=EvaluationTriggerKind.INITIAL_EVALUATION,
-        prompt=prompt,
         initial_context=initial_context,
     )
     assessment = NarrativeIntensityAndPressureAssessment(
@@ -41,7 +39,6 @@ def test_assessment_question_keeps_assessment_as_its_answer() -> None:
     assert question.answer is assessment
     assert question.id == question_id
     assert question.intention_id == intention_id
-    assert question.prompt == prompt
     assert question.initial_context == initial_context
 
 
@@ -50,7 +47,6 @@ def test_assessment_question_rejects_second_answer_and_preserves_first() -> None
         id=UUID(int=1),
         intention_id=UUID(int=2),
         trigger=EvaluationTriggerKind.ANCHOR_STATE_CHANGED,
-        prompt="How intense and urgent should Borg's revenge be?",
         initial_context="The player injured Borg and escaped.",
     )
     original_assessment = NarrativeIntensityAndPressureAssessment(
@@ -83,7 +79,6 @@ def test_assessment_question_preserves_its_trigger() -> None:
         id=UUID(int=1),
         intention_id=UUID(int=2),
         trigger=trigger,
-        prompt="How should Borg's revenge be reassessed?",
         initial_context="The time threshold for reassessment was reached.",
     )
 
