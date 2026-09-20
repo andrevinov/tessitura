@@ -324,8 +324,10 @@ schema precisam ser duplicados como campos nas entidades atuais.
 
 `initial_context` permanece textual nos recortes implementados. Ele registra os
 dados apresentados ao Narrador e não substitui o futuro recorte estruturado do
-Cânone e do Estado do Mundo. A forma desse contexto deverá emergir quando essas
-fontes existirem; não será antecipada como um objeto genérico neste momento.
+Cânone e do Estado do Mundo. No disparo por limite temporal, seu conteúdo é
+derivado deterministicamente de `WorldTimeAdvance`; nos demais fluxos, ainda é
+fornecido pelo chamador. Uma abstração genérica de contexto não será antecipada
+antes que outras fontes concretas criem essa necessidade.
 
 Uma resposta narrativa também poderá criar a necessidade de outra questão. O
 novo `NarrativeFrame` só deverá ser formado quando as lacunas necessárias ao

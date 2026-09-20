@@ -36,7 +36,7 @@
 
 **Assessment Vigente:** Assessment de Intensidade e Pressão atualmente aplicado a uma Intenção Narrativa, exposto por `current_assessment`. Cada Intenção mantém um único Assessment vigente; uma nova aplicação substitui o conjunto completo, sem modificar o anterior.
 
-**Categoria de Disparo de Avaliação:** classificação da origem da avaliação, representada por `EvaluationTriggerKind`: avaliação inicial, limite de tempo, limite de nível, mudança de estado da âncora ou mudança de conhecimento. Nas reavaliações, identifica o tipo de condição determinística cuja detecção cabe ao Tessitura, sem determinar a interpretação do Narrador. A categoria não contém os detalhes da condição concreta e sua representação não implementa o monitoramento dessa condição.
+**Categoria de Disparo de Avaliação:** classificação da origem da avaliação, representada por `EvaluationTriggerKind`: avaliação inicial, limite de tempo, limite de nível, mudança de estado da âncora ou mudança de conhecimento. Nas reavaliações, identifica o tipo de condição determinística cuja detecção cabe ao Tessitura, sem determinar a interpretação do Narrador. A categoria não contém os detalhes da condição concreta nem monitora a condição por si mesma; o primeiro detector concreto é o caso de uso que verifica um limite temporal contra um Avanço do Tempo do Mundo.
 
 **Âncora Narrativa:** vínculo opcional entre uma Intenção Narrativa e um ou mais elementos do Cânone da História que devem permanecer causalmente relacionados às suas possíveis realizações. A âncora restringe a direção das Preparações Narrativas sem determinar necessariamente quem executará a Situação.
 
@@ -46,7 +46,11 @@
 
 **Fato Canônico:** afirmação imutável sobre algo que efetivamente aconteceu no mundo.
 
-**Estado do Mundo:** condição atual do mundo, produzida pelos Fatos Canônicos acumulados e alterável por novos acontecimentos.
+**Estado do Mundo:** condição atual do mundo, produzida pelos Fatos Canônicos acumulados e alterável por novos acontecimentos. O primeiro recorte implementado, `WorldState`, mantém somente o Tempo Ficcional decorrido em minutos e a revisão corrente.
+
+**Tempo Ficcional:** medida determinística do tempo decorrido dentro do mundo. No recorte atual, é representado por um total inteiro de minutos, sem calendário, datas ou fusos.
+
+**Avanço do Tempo do Mundo:** acontecimento imutável, representado por `WorldTimeAdvance`, que registra o minuto ficcional anterior, o minuto atual e a revisão do Estado do Mundo produzida por um avanço. Pode ser verificado contra um limite temporal sem conhecer uma Intenção Narrativa.
 
 **Intenção de Personagem:** desejo ou objetivo pertencente a um personagem do mundo e, portanto, integrante do Cânone da História, mesmo quando desconhecido pelo Jogador. Pode originar uma Intenção Narrativa por meio de uma Âncora Narrativa.
 

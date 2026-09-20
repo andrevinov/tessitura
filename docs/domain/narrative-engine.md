@@ -10,7 +10,7 @@ Essa fronteira preserva responsabilidades diferentes. O Tessitura identifica a d
 
 As duas questões implementadas são específicas. `NarrativeIntensityAndPressureAssessmentQuestion` solicita um `NarrativeIntensityAndPressureAssessment`; `NarrativePreparationCreationQuestion` solicita a descrição e a Justificativa do Narrador necessárias para propor uma Preparação. A classe concreta fornece a semântica que antes dependeria de uma frase livre.
 
-Ambas possuem identidade própria (`id`), referência explícita à Intenção (`intention_id`) e contexto inicial (`initial_context`). O contexto permanece como texto na implementação atual porque ainda não existem Cânone, Estado do Mundo ou referências contextuais estruturadas capazes de substituí-lo. Contexto e enunciado exercem responsabilidades diferentes: o contexto fornece dados para decidir; um enunciado repetiria a operação já definida pelo tipo da questão.
+Ambas possuem identidade própria (`id`), referência explícita à Intenção (`intention_id`) e contexto inicial (`initial_context`). O contexto permanece como texto na implementação atual porque o Estado do Mundo contém somente o primeiro recorte de tempo ficcional e ainda não existem Cânone ou referências contextuais estruturadas capazes de substituí-lo. No disparo por tempo, esse texto é derivado dos dados de um avanço do mundo; nos demais fluxos, ainda é fornecido pelo chamador. Contexto e enunciado exercem responsabilidades diferentes: o contexto fornece dados para decidir; um enunciado repetiria a operação já definida pelo tipo da questão.
 
 `NarrativeIntensityAndPressureAssessmentQuestion` também mantém, por meio de `EvaluationTriggerKind`, a categoria do disparo que motivou a avaliação. Ela nasce com `answer` igual a `None`. O método `respond(assessment)` recebe um `NarrativeIntensityAndPressureAssessment` e o mantém como resposta. Uma segunda resposta é rejeitada sem substituir o Assessment original. Responder à questão não aplica o Assessment à Intenção.
 
@@ -30,7 +30,7 @@ Os Value Objects envolvidos não se tornam, por isso, proprietários de questõe
 
 ### Limites da implementação atual
 
-Ainda não existem geração automática de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas, DTO serializado com `kind` nem adaptador que apresente questões ao Narrador. Na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`; na questão de criação, ela permanece ao lado da descrição proposta.
+Ainda não existem geração automática geral de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas, DTO serializado com `kind` nem adaptador que apresente questões ao Narrador. O único disparo derivado do Estado do Mundo implementado é a solicitação explícita de uma questão quando um avanço de tempo cruza um limite. Na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`; na questão de criação, ela permanece ao lado da descrição proposta.
 
 ## Estágios de compromisso narrativo
 
@@ -118,9 +118,23 @@ Os disparos de reavaliação representam condições determinísticas cuja ident
 
 O enum identifica somente a categoria. Ele não contém a condição concreta, o limite configurado, os campos alterados, quem adquiriu informação ou qual informação foi adquirida.
 
+#### Primeiro recorte do Estado do Mundo e do tempo ficcional
+
+`WorldState` representa a menor parcela de mundo atualmente executável. Ele mantém os minutos ficcionais decorridos e uma revisão que começa em zero. `advance_time(minutes)` aceita apenas um avanço positivo, atualiza ambos os valores e devolve um `WorldTimeAdvance` imutável com o minuto anterior, o minuto atual e a revisão produzida.
+
+O avanço é um fato estruturado separado do estado atual. Essa separação permite verificar o mesmo acontecimento contra diferentes limites ou Intenções sem fazer `WorldState` conhecer regras narrativas. `WorldTimeAdvance.reaches(elapsed_minute)` considera um limite alcançado somente quando ele foi efetivamente cruzado pelo avanço:
+
+```text
+minuto_anterior < limite <= minuto_atual
+```
+
+`request_narrative_assessment_for_time_threshold()` é o caso de uso que conecta esse acontecimento a uma Intenção. Ele recebe o avanço, a Intenção, o limite de reavaliação e a identidade reservada para uma possível questão. Se o avanço não alcançou o limite, retorna `None`. Se alcançou, cria uma `NarrativeIntensityAndPressureAssessmentQuestion` pertencente à Intenção, marcada com `TIME_THRESHOLD_REACHED` e ainda sem resposta.
+
+O `initial_context` dessa questão é uma projeção textual determinística dos dados estruturados do avanço e do limite. Ele informa ao Narrador os minutos anterior e atual, o limite alcançado e a revisão do mundo; não formula uma pergunta em prosa nem decide como Intensidade ou Pressão devem mudar.
+
 #### Limites da implementação atual
 
-Existem as representações do Assessment e das categorias de disparo, além da substituição do Assessment vigente na Intenção. Ainda não existem monitoramento de condições, agendamento ou persistência de histórico.
+O recorte implementado detecta somente o cruzamento de um limite absoluto de minutos em um `WorldTimeAdvance` fornecido explicitamente. O limite ainda não integra a configuração da Intenção, e o chamador ainda precisa selecionar a Intenção, fornecer o identificador da questão e invocar o caso de uso. Não existem cadastro de limites temporais, descoberta automática de Intenções afetadas, prevenção de questões duplicadas, calendário, agendamento ou persistência de histórico. As demais categorias de disparo ainda não possuem detecção concreta.
 
 O fornecimento de contexto em níveis de aprofundamento sob demanda continua sendo uma hipótese de apoio ao fluxo, não um mecanismo implementado.
 
