@@ -11,6 +11,9 @@ from tessitura.application.create_narrative_preparation_from_answered_question i
 from tessitura.application.evaluate_narrative_intention_eligibility import (
     evaluate_narrative_intention_eligibility,
 )
+from tessitura.application.request_narrative_preparation_creation import (
+    request_narrative_preparation_creation,
+)
 from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
@@ -110,9 +113,9 @@ def test_reassessment_allows_narrative_preparation_creation() -> None:
 
     assert evaluate_narrative_intention_eligibility(intention) is True
 
-    preparation_question = NarrativePreparationCreationQuestion(
-        id=UUID(int=3),
-        intention_id=intention.id,
+    preparation_question = request_narrative_preparation_creation(
+        question_id=UUID(int=3),
+        intention=intention,
         initial_context="Borg now has enough urgency to prepare a retaliation.",
     )
     preparation_justification = NarratorJustification(
@@ -133,3 +136,59 @@ def test_reassessment_allows_narrative_preparation_creation() -> None:
     assert preparation.intention is intention
     assert preparation.description == "Borg hires mercenaries"
     assert preparation.justification is preparation_justification
+
+
+def test_preparation_creation_rechecks_eligibility_after_question_request() -> None:
+    minimum_pressure = MinimumNarrativePressureCondition(minimum=NarrativePressure(50))
+    intention = NarrativeIntention(
+        id=UUID(int=1),
+        direction="Borg seeks revenge",
+        current_assessment=NarrativeIntensityAndPressureAssessment(
+            intensity=NarrativeIntensity(80),
+            pressure=NarrativePressure(60),
+            justification=NarratorJustification(
+                "Borg wants severe retaliation and has reason to act soon."
+            ),
+        ),
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(minimum_pressure,),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
+    )
+    preparation_question = request_narrative_preparation_creation(
+        question_id=UUID(int=2),
+        intention=intention,
+        initial_context="Borg has enough urgency to prepare a retaliation.",
+    )
+    reassessment_question = NarrativeIntensityAndPressureAssessmentQuestion(
+        id=UUID(int=3),
+        intention_id=intention.id,
+        trigger=EvaluationTriggerKind.KNOWLEDGE_CHANGED,
+        initial_context="Borg learned that retaliation would now harm his interests.",
+    )
+    reassessment_question.respond(
+        NarrativeIntensityAndPressureAssessment(
+            intensity=NarrativeIntensity(30),
+            pressure=NarrativePressure(20),
+            justification=NarratorJustification(
+                "Borg still wants revenge but no longer considers it urgent."
+            ),
+        )
+    )
+    apply_answered_narrative_assessment_question(intention, reassessment_question)
+    preparation_question.respond(
+        answer="Borg hires mercenaries",
+        justification=NarratorJustification(
+            "An indirect retaliation would suit Borg's available resources."
+        ),
+    )
+
+    assert evaluate_narrative_intention_eligibility(intention) is False
+
+    with pytest.raises(ValueError, match="not eligible"):
+        create_narrative_preparation_from_answered_question(
+            preparation_id=UUID(int=4),
+            intention=intention,
+            question=preparation_question,
+        )
