@@ -6,6 +6,9 @@ from tessitura.application.apply_answered_narrative_assessment_question import (
 from tessitura.application.evaluate_narrative_intention_eligibility import (
     evaluate_narrative_intention_eligibility,
 )
+from tessitura.application.request_narrative_assessment_for_time_threshold import (
+    request_narrative_assessment_for_time_threshold,
+)
 from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
@@ -17,12 +20,10 @@ from tessitura.domain.narrative_intensity import NarrativeIntensity
 from tessitura.domain.narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
 )
-from tessitura.domain.narrative_intensity_and_pressure_assessment_question import (
-    NarrativeIntensityAndPressureAssessmentQuestion,
-)
 from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
+from tessitura.domain.world_state import WorldState
 
 
 def test_reassessment_can_make_narrative_intention_eligible() -> None:
@@ -46,12 +47,38 @@ def test_reassessment_can_make_narrative_intention_eligible() -> None:
 
     assert evaluate_narrative_intention_eligibility(intention) is False
 
-    question = NarrativeIntensityAndPressureAssessmentQuestion(
-        id=UUID(int=2),
-        intention_id=intention.id,
-        trigger=EvaluationTriggerKind.ANCHOR_STATE_CHANGED,
-        initial_context="The player injured Borg and escaped.",
+    world = WorldState()
+    first_time_advance = world.advance_time(minutes=59)
+
+    assert (
+        request_narrative_assessment_for_time_threshold(
+            question_id=UUID(int=2),
+            intention=intention,
+            time_advance=first_time_advance,
+            reassessment_at_elapsed_minute=60,
+        )
+        is None
     )
+
+    threshold_reaching_advance = world.advance_time(minutes=1)
+    question = request_narrative_assessment_for_time_threshold(
+        question_id=UUID(int=2),
+        intention=intention,
+        time_advance=threshold_reaching_advance,
+        reassessment_at_elapsed_minute=60,
+    )
+
+    assert question is not None
+    assert question.id == UUID(int=2)
+    assert question.intention_id == intention.id
+    assert question.trigger is EvaluationTriggerKind.TIME_THRESHOLD_REACHED
+    assert question.answer is None
+    assert question.initial_context == (
+        "World time advanced from fictional minute 59 to fictional minute 60, "
+        "reaching the reassessment threshold at fictional minute 60 in world "
+        "revision 2."
+    )
+
     reassessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(80),
         pressure=NarrativePressure(60),
