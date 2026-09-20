@@ -11,6 +11,7 @@ from tessitura.domain.narrative_intensity_and_pressure_assessment import (
 @dataclass(frozen=True)
 class NarrativeAssessmentExecutionRecord:
     execution_id: UUID
+    narrative_engine_version: str
     completed_at: datetime
     duration_milliseconds: int
     provider: str

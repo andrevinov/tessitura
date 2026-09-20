@@ -1,7 +1,7 @@
 from typing import Protocol
 
-from tessitura.domain.narrative_intensity_and_pressure_assessment import (
-    NarrativeIntensityAndPressureAssessment,
+from tessitura.application.narrative_assessment_execution_record import (
+    NarrativeAssessmentExecutionRecord,
 )
 from tessitura.domain.narrative_intensity_and_pressure_assessment_question import (
     NarrativeIntensityAndPressureAssessmentQuestion,
@@ -14,4 +14,4 @@ class NarrativeAssessmentNarrator(Protocol):
         self,
         question: NarrativeIntensityAndPressureAssessmentQuestion,
         intention: NarrativeIntention,
-    ) -> NarrativeIntensityAndPressureAssessment: ...
+    ) -> NarrativeAssessmentExecutionRecord: ...

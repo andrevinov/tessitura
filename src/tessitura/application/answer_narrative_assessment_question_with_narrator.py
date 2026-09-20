@@ -1,3 +1,6 @@
+from tessitura.application.narrative_assessment_execution_record import (
+    NarrativeAssessmentExecutionRecord,
+)
 from tessitura.application.narrative_assessment_narrator import (
     NarrativeAssessmentNarrator,
 )
@@ -11,11 +14,12 @@ def answer_narrative_assessment_question_with_narrator(
     intention: NarrativeIntention,
     question: NarrativeIntensityAndPressureAssessmentQuestion,
     narrator: NarrativeAssessmentNarrator,
-) -> None:
+) -> NarrativeAssessmentExecutionRecord:
     if question.intention_id != intention.id:
         raise ValueError(
             "Narrative question belongs to a different narrative intention"
         )
 
-    assessment = narrator.assess(question, intention)
-    question.respond(assessment)
+    execution_record = narrator.assess(question, intention)
+    question.respond(execution_record.resulting_assessment)
+    return execution_record

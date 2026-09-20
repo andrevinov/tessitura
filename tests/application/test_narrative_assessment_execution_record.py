@@ -19,6 +19,7 @@ from tessitura.domain.narrator_justification import NarratorJustification
 def test_execution_record_cannot_be_changed_after_creation() -> None:
     record = NarrativeAssessmentExecutionRecord(
         execution_id=UUID(int=1),
+        narrative_engine_version="0.1.0",
         completed_at=datetime(2026, 9, 20, 12, tzinfo=UTC),
         duration_milliseconds=750,
         provider="openai",

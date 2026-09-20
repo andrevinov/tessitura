@@ -1,8 +1,14 @@
 import json
+from datetime import UTC, datetime
+from time import perf_counter
 from typing import cast
+from uuid import uuid4
 
 from openai import OpenAI
 
+from tessitura.application.narrative_assessment_execution_record import (
+    NarrativeAssessmentExecutionRecord,
+)
 from tessitura.domain.narrative_intensity import NarrativeIntensity
 from tessitura.domain.narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
@@ -16,28 +22,36 @@ from tessitura.domain.narrator_justification import NarratorJustification
 
 
 class OpenAINarrativeAssessmentNarrator:
-    def __init__(self, client: OpenAI, model: str = "gpt-5.6-luna") -> None:
+    def __init__(
+        self,
+        client: OpenAI,
+        narrative_engine_version: str,
+        model: str = "gpt-5.6-luna",
+    ) -> None:
         self._client = client
+        self._narrative_engine_version = narrative_engine_version
         self._model = model
 
     def assess(
         self,
         question: NarrativeIntensityAndPressureAssessmentQuestion,
         intention: NarrativeIntention,
-    ) -> NarrativeIntensityAndPressureAssessment:
+    ) -> NarrativeAssessmentExecutionRecord:
+        instructions = (
+            "You are Tessitura's narrative assessment component. "
+            "Evaluate the supplied narrative intention using only the supplied "
+            "structured data. Narrative intensity is the desired strength of "
+            "the intention's eventual realization, from 1 to 100. Narrative "
+            "pressure is its current urgency to find a realization, from 0 to "
+            "100. Return final values rather than deltas. Justify the decision "
+            "in one or two concise sentences."
+        )
+        started_at = perf_counter()
         response = self._client.responses.create(
             model=self._model,
             reasoning={"effort": "low"},
             max_output_tokens=500,
-            instructions=(
-                "You are Tessitura's narrative assessment component. "
-                "Evaluate the supplied narrative intention using only the supplied "
-                "structured data. Narrative intensity is the desired strength of "
-                "the intention's eventual realization, from 1 to 100. Narrative "
-                "pressure is its current urgency to find a realization, from 0 to "
-                "100. Return final values rather than deltas. Justify the decision "
-                "in one or two concise sentences."
-            ),
+            instructions=instructions,
             input=json.dumps(
                 {
                     "question": {
@@ -89,8 +103,9 @@ class OpenAINarrativeAssessmentNarrator:
                 }
             },
         )
+        response_text = response.output_text
         try:
-            raw_response: object = json.loads(response.output_text)
+            raw_response: object = json.loads(response_text)
         except json.JSONDecodeError as error:
             raise ValueError(
                 "OpenAI returned no structured narrative assessment"
@@ -112,8 +127,32 @@ class OpenAINarrativeAssessmentNarrator:
         ):
             raise TypeError("OpenAI returned an invalid narrative assessment")
 
-        return NarrativeIntensityAndPressureAssessment(
+        assessment = NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(intensity),
             pressure=NarrativePressure(pressure),
             justification=NarratorJustification(justification),
+        )
+        usage = response.usage
+        if usage is None:
+            raise ValueError("OpenAI returned no token usage information")
+
+        return NarrativeAssessmentExecutionRecord(
+            execution_id=uuid4(),
+            narrative_engine_version=self._narrative_engine_version,
+            completed_at=datetime.now(UTC),
+            duration_milliseconds=round((perf_counter() - started_at) * 1000),
+            provider="openai",
+            model=response.model,
+            instructions=instructions,
+            question_id=question.id,
+            intention_id=intention.id,
+            trigger=question.trigger,
+            initial_context=question.initial_context,
+            intention_direction=intention.direction,
+            previous_assessment=intention.current_assessment,
+            provider_response_id=response.id,
+            raw_response=response_text,
+            resulting_assessment=assessment,
+            input_tokens=usage.input_tokens,
+            output_tokens=usage.output_tokens,
         )
