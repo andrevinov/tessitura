@@ -219,3 +219,6 @@ __marimo__/
 
 # Local reference books
 books/
+
+# Local execution artifacts
+artifacts/
