@@ -57,7 +57,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def test_openai_reassesses_an_intention_after_world_time_reaches_threshold() -> None:
+def test_openai_narrator_keeps_assessment_when_only_time_passes() -> None:
     previous_assessment = NarrativeIntensityAndPressureAssessment(
         intensity=NarrativeIntensity(30),
         pressure=NarrativePressure(20),
@@ -140,4 +140,29 @@ def test_openai_reassesses_an_intention_after_world_time_reaches_threshold() -> 
     assert intention.current_assessment is assessment
     assert evaluate_narrative_intention_eligibility(intention) is (
         assessment.pressure.value >= 50
+    )
+
+    intensity_preservation_score = float(
+        assessment.intensity.value == previous_assessment.intensity.value
+    )
+    pressure_preservation_score = float(
+        assessment.pressure.value == previous_assessment.pressure.value
+    )
+    narrator_evaluation_score = (
+        intensity_preservation_score + pressure_preservation_score
+    ) / 2
+    evaluation_result = {
+        "execution_id": str(execution_record.execution_id),
+        "expected_intensity": previous_assessment.intensity.value,
+        "actual_intensity": assessment.intensity.value,
+        "intensity_preservation_score": intensity_preservation_score,
+        "expected_pressure": previous_assessment.pressure.value,
+        "actual_pressure": assessment.pressure.value,
+        "pressure_preservation_score": pressure_preservation_score,
+        "score": narrator_evaluation_score,
+    }
+
+    print(json.dumps({"narrator_evaluation": evaluation_result}, ensure_ascii=False))
+    assert narrator_evaluation_score == 1.0, (
+        f"Narrator evaluation failed: {json.dumps(evaluation_result)}"
     )
