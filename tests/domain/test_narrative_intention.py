@@ -274,6 +274,34 @@ def test_narrative_intention_cannot_change_its_id() -> None:
     assert intention.id == original_id
 
 
+def test_narrative_intention_repr_shows_diagnostic_state() -> None:
+    intention_id = UUID(int=1)
+    intention = NarrativeIntention(
+        id=intention_id,
+        archetype=THE_TOWER,
+        eligibility_configuration=NarrativeEligibilityConfiguration(
+            mandatory_conditions=(MinimumNarrativePressureCondition(),),
+            weighted_conditions=(),
+            minimum_score=0,
+        ),
+        current_assessment=NarrativeIntensityAndPressureAssessment(
+            intensity=NarrativeIntensity(30),
+            pressure=NarrativePressure(20),
+            justification=NarratorJustification(
+                "The intention has not found a concrete form yet."
+            ),
+        ),
+    )
+
+    assert repr(intention) == (
+        "NarrativeIntention("
+        f"id={intention_id!r}, "
+        "archetype_name='The Tower', "
+        "intensity=30, "
+        "pressure=20)"
+    )
+
+
 @pytest.mark.parametrize(
     ("name", "description", "error_message"),
     [

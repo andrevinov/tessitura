@@ -22,6 +22,16 @@ class NarrativeIntention:
         self._current_assessment = current_assessment
         self._eligibility_configuration = eligibility_configuration
 
+    def __repr__(self) -> str:
+        return (
+            "NarrativeIntention("
+            f"id={self._id!r}, "
+            f"archetype_name={self._archetype.name!r}, "
+            f"intensity={self.intensity.value}, "
+            f"pressure={self.pressure.value}"
+            ")"
+        )
+
     @property
     def id(self) -> UUID:
         return self._id
