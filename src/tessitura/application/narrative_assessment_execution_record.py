@@ -3,6 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
 )
@@ -21,7 +22,7 @@ class NarrativeAssessmentExecutionRecord:
     intention_id: UUID
     trigger: EvaluationTriggerKind
     initial_context: str
-    intention_direction: str
+    intention_archetype: NarrativeArchetype
     previous_assessment: NarrativeIntensityAndPressureAssessment
     provider_response_id: str
     raw_response: str
