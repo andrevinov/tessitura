@@ -259,6 +259,14 @@ A criação de uma Preparação é uma decisão criativa do Narrador. Cada Prepa
 
 Uma questão respondida não supera uma falha de elegibilidade. O teste funcional também demonstra o caminho positivo completo atualmente disponível: uma reavaliação eleva a Pressão Narrativa, torna a Intenção elegível, permite responder à questão criativa e resulta em uma Preparação. A Preparação continua fora do Cânone e ainda não existe Materialização.
 
+#### Registro de execução da proposta
+
+`NarrativePreparationCreationExecutionRecord` é o registro imutável de aplicação destinado a reunir os dados de uma execução na qual um Narrador propõe a resposta para uma `NarrativePreparationCreationQuestion`. Ele mantém a identidade, a versão do motor, o instante e a duração da execução; provedor, modelo e instruções; as identidades da questão e da Intenção; contexto inicial, Arquétipo e Assessment vigente; além da descrição proposta, Justificativa do Narrador, resposta bruta, identificação da resposta externa e consumo de tokens.
+
+A descrição permanece uma proposta: o registro não responde à questão, não reavalia a elegibilidade e não cria uma `NarrativePreparation`. Essas responsabilidades continuam separadas para que a decisão externa possa ser auditada antes de sua aplicação pelos casos de uso existentes.
+
+O registro é uma `dataclass` congelada, e seu teste impede a substituição de campos depois da construção. Ainda não existem contrato de Narrador, adaptador externo nem recorder JSONL para essa execução; portanto, nenhuma parte do fluxo atual instancia ou persiste esse registro.
+
 ### Oportunidade Narrativa
 
 Uma Oportunidade Narrativa surge quando o contexto atual satisfaz os Requisitos Rígidos e ao menos parte dos Requisitos Maleáveis de uma Preparação, permitindo considerar sua adaptação ao momento presente. A Oportunidade não é uma passagem obrigatória: uma Preparação que já encontre a forma esperada pode seguir diretamente para uma Avaliação de Materialização.
