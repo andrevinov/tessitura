@@ -22,7 +22,9 @@
 
 **Cânone da História:** verdade objetiva completa do mundo, formada por tudo que aconteceu e tudo que está acontecendo, inclusive fatos que o Jogador desconhece.
 
-**Intenção Narrativa:** direção ainda pouco comprometida com sua forma de realização. Ela pressiona o sistema para encontrar uma realização coerente, mas não pertence ao Cânone da História nem garante que acontecerá.
+**Arquétipo Narrativo:** núcleo semântico abstrato de uma Intenção Narrativa, representado por `NarrativeArchetype`. Possui nome e descrição não vazios, não define participantes nem forma de realização e permanece imutável depois de criado.
+
+**Intenção Narrativa:** possibilidade abstrata para a história caracterizada por um Arquétipo Narrativo e ainda pouco comprometida com sua forma de realização. Ela pressiona o sistema para encontrar uma realização coerente, mas não pertence ao Cânone da História nem garante que acontecerá.
 
 **Intensidade Narrativa:** escala ou força que a realização de uma Intenção Narrativa deverá possuir.
 
@@ -38,7 +40,7 @@
 
 **Categoria de Disparo de Avaliação:** classificação da origem da avaliação, representada por `EvaluationTriggerKind`: avaliação inicial, limite de tempo, limite de nível, mudança de estado da âncora ou mudança de conhecimento. Nas reavaliações, identifica o tipo de condição determinística cuja detecção cabe ao Tessitura, sem determinar a interpretação do Narrador. A categoria não contém os detalhes da condição concreta nem monitora a condição por si mesma; o primeiro detector concreto é o caso de uso que verifica um limite temporal contra um Avanço do Tempo do Mundo.
 
-**Âncora Narrativa:** vínculo opcional entre uma Intenção Narrativa e um ou mais elementos do Cânone da História que devem permanecer causalmente relacionados às suas possíveis realizações. A âncora restringe a direção das Preparações Narrativas sem determinar necessariamente quem executará a Situação.
+**Âncora Narrativa:** vínculo opcional entre uma Intenção Narrativa e um ou mais elementos do Cânone da História que devem permanecer causalmente relacionados às suas possíveis realizações. A âncora restringe as Preparações Narrativas sem determinar necessariamente quem executará a Situação.
 
 **Preparação Narrativa:** forma concreta possível de materializar uma única Intenção Narrativa. Ela pode definir participantes, alvos, lugares, condições e gatilhos, mas ainda não pertence ao Cânone da História.
 

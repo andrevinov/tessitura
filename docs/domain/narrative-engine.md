@@ -34,19 +34,25 @@ Ainda não existem geração automática geral de questões, recuperação progr
 
 ## Estágios de compromisso narrativo
 
-Uma direção narrativa pode adquirir compromisso com a realidade do jogo progressivamente. Os conceitos descritos aqui não são camadas arquiteturais nem níveis de um único objeto: são conceitos distintos e relacionados.
+Uma possibilidade narrativa pode adquirir compromisso com a realidade do jogo progressivamente. Os conceitos descritos aqui não são camadas arquiteturais nem níveis de um único objeto: são conceitos distintos e relacionados.
 
 O **Cânone da História** representa a verdade objetiva completa do mundo: tudo que aconteceu e tudo que está acontecendo, inclusive fatos que o Jogador ainda desconhece. Somente aquilo que se torna real pode alterar o Cânone da História.
 
 ### Intenção Narrativa
 
-Uma Intenção Narrativa é uma direção desejada para a história que ainda possui pouco compromisso com a forma pela qual poderá acontecer. Ela deve possuir poucos atributos e permanecer altamente maleável. Ainda podem estar indefinidos seus participantes, seu alvo, seu momento, seu local e sua forma de realização.
+Uma Intenção Narrativa é uma possibilidade abstrata para a história que ainda possui pouco compromisso com a forma pela qual poderá acontecer. Ela deve possuir poucos atributos e permanecer altamente maleável. Ainda podem estar indefinidos seus participantes, seu alvo, seu momento, seu local e sua forma de realização.
 
 Uma Intenção Narrativa pressiona o sistema para encontrar alguma forma coerente de realização, mas não garante que acontecerá. Espera-se que boa parte das Intenções seja realizada, diretamente ou por meio de combinação com outras, quando o sistema estiver funcionando adequadamente. Enquanto permanecer apenas como intenção, ela não altera o Cânone da História.
 
-Uma Intenção possui identidade estável durante sua existência. Sua direção, sua Intensidade Narrativa, sua Pressão Narrativa e seu estado podem evoluir sem substituir essa identidade; alterar seu identificador não é uma transição válida.
+Uma Intenção possui identidade estável durante sua existência. Seu Arquétipo Narrativo permanece associado à mesma identidade, enquanto sua Intensidade Narrativa, sua Pressão Narrativa e sua configuração de elegibilidade podem ser substituídas pelas operações já definidas. Alterar diretamente seu identificador ou seu Arquétipo não é uma transição válida.
 
 O planejamento atual privilegia Intenções pequenas, normalmente realizáveis por uma única Situação. Intenções maiores, que precisem de várias Situações para serem cumpridas, permanecem como possibilidade para uma evolução futura do sistema.
+
+#### Arquétipo Narrativo
+
+`NarrativeArchetype` é o Value Object imutável que representa o conteúdo semântico mínimo de uma Intenção. Ele possui `name` e `description`, rejeita valores vazios para ambos e não determina participantes, lugar, momento ou forma de realização.
+
+`NarrativeIntention` recebe e expõe um Arquétipo em vez de uma direção textual própria. O adaptador OpenAI apresenta ao Narrador tanto o nome quanto a descrição, e o registro de execução preserva os mesmos dados. Ainda não existe um catálogo de Arquétipos implementado.
 
 Uma Intenção possui **Intensidade Narrativa** e **Pressão Narrativa**, que representam dimensões diferentes:
 
@@ -235,7 +241,7 @@ Uma Preparação Narrativa é uma forma mais concreta pela qual uma Intenção N
 
 Uma Preparação continua sendo uma possibilidade, não um fato. Ela permanece maleável, embora menos que a Intenção que a originou. O Narrador pode adaptá-la ao reconhecer uma oportunidade mais adequada, desde que a alteração respeite o Cânone e os compromissos que já tenham se tornado reais.
 
-Cada Preparação é filha de uma única Intenção Narrativa, mas uma Intenção pode desdobrar-se em várias Preparações alternativas, como uma missão paralela, uma interrupção de intenção declarada ou outra situação compatível com sua direção.
+Cada Preparação é filha de uma única Intenção Narrativa, mas uma Intenção pode desdobrar-se em várias Preparações alternativas, como uma missão paralela, uma interrupção de intenção declarada ou outra situação compatível com seu Arquétipo.
 
 Uma Preparação também possui identidade estável. Adaptações preservam tanto essa identidade quanto a Intenção Narrativa que a originou; substituir qualquer uma delas não é uma adaptação válida.
 
@@ -243,7 +249,7 @@ Para uma Intenção pequena, é provável que apenas uma de suas Preparações a
 
 Uma Preparação não altera por si mesma o Cânone da História.
 
-A criação de uma Preparação é uma decisão criativa do Narrador. Cada Preparação criada deve conter uma Justificativa do Narrador que explique brevemente como aquela forma realiza a direção da Intenção, respeita suas Âncoras Narrativas e corresponde à Intensidade Narrativa pretendida.
+A criação de uma Preparação é uma decisão criativa do Narrador. Cada Preparação criada deve conter uma Justificativa do Narrador que explique brevemente como aquela forma concretiza o Arquétipo da Intenção, respeita suas Âncoras Narrativas e corresponde à Intensidade Narrativa pretendida.
 
 #### Criação a partir de uma questão respondida
 
@@ -319,7 +325,7 @@ Intenções de personagens e novas direções narrativas
 Novas Intenções Narrativas
 ```
 
-A intenção de um personagem e uma Intenção Narrativa continuam sendo conceitos diferentes. A primeira é um fato canônico sobre aquilo que o personagem deseja; a segunda é uma direção ainda não realizada para a história. Uma pode originar a outra por meio de uma âncora narrativa.
+A intenção de um personagem e uma Intenção Narrativa continuam sendo conceitos diferentes. A primeira é um fato canônico sobre aquilo que o personagem deseja; a segunda é uma possibilidade abstrata ainda não realizada para a história. Uma pode originar a outra por meio de uma âncora narrativa.
 
 As Intenções não formam necessariamente uma fila simples. Intensidade Narrativa, Pressão Narrativa, coerência com o Cânone e adequação das Preparações ajudam a determinar quais direções encontram oportunidade de materialização primeiro. O mecanismo exato dessa avaliação ainda não foi estabelecido.
 
