@@ -8,6 +8,7 @@ from tessitura.application.request_narrative_preparation_creation import (
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -19,11 +20,16 @@ from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 
+THE_TOWER = NarrativeArchetype(
+    name="The Tower",
+    description="A presumed safety collapses abruptly.",
+)
+
 
 def test_ineligible_intention_cannot_request_narrative_preparation_creation() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(30),
             pressure=NarrativePressure(20),
@@ -51,7 +57,7 @@ def test_ineligible_intention_cannot_request_narrative_preparation_creation() ->
 def test_eligible_intention_can_request_narrative_preparation_creation() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(80),
             pressure=NarrativePressure(60),

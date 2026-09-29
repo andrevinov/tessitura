@@ -40,7 +40,9 @@ class OpenAINarrativeAssessmentNarrator:
         instructions = (
             "You are Tessitura's narrative assessment component. "
             "Evaluate the supplied narrative intention using only the supplied "
-            "structured data. Narrative intensity is the desired strength of "
+            "structured data. Its narrative archetype defines an abstract kind "
+            "of development without specifying concrete participants or form. "
+            "Narrative intensity is the desired strength of "
             "the intention's eventual realization, from 1 to 100. Narrative "
             "pressure is its current urgency to find a realization, from 0 to "
             "100. Return final values rather than deltas. Justify the decision "
@@ -62,7 +64,10 @@ class OpenAINarrativeAssessmentNarrator:
                     },
                     "intention": {
                         "id": str(intention.id),
-                        "direction": intention.direction,
+                        "archetype": {
+                            "name": intention.archetype.name,
+                            "description": intention.archetype.description,
+                        },
                         "current_assessment": {
                             "intensity": intention.intensity.value,
                             "pressure": intention.pressure.value,
@@ -148,7 +153,7 @@ class OpenAINarrativeAssessmentNarrator:
             intention_id=intention.id,
             trigger=question.trigger,
             initial_context=question.initial_context,
-            intention_direction=intention.direction,
+            intention_archetype=intention.archetype,
             previous_assessment=intention.current_assessment,
             provider_response_id=response.id,
             raw_response=response_text,

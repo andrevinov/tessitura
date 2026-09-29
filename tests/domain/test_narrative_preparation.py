@@ -5,6 +5,7 @@ import pytest
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -17,11 +18,20 @@ from tessitura.domain.narrative_preparation import NarrativePreparation
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 
+THE_TOWER = NarrativeArchetype(
+    name="The Tower",
+    description="A presumed safety collapses abruptly.",
+)
+THE_MOON = NarrativeArchetype(
+    name="The Moon",
+    description="Hidden truths and uncertain perceptions obscure the path.",
+)
+
 
 def test_narrative_preparation_preserves_its_intention() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -51,7 +61,7 @@ def test_narrative_preparation_preserves_its_intention() -> None:
 def test_narrative_preparation_cannot_change_its_intention() -> None:
     original_intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -75,7 +85,7 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
     )
     another_intention = NarrativeIntention(
         id=UUID(int=3),
-        direction="Reveal the corruption beneath the city",
+        archetype=THE_MOON,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -99,7 +109,7 @@ def test_narrative_preparation_cannot_change_its_intention() -> None:
 def test_narrative_preparation_rejects_blank_description() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -129,7 +139,7 @@ def test_narrative_preparation_cannot_change_its_id() -> None:
     original_id = UUID(int=2)
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -162,7 +172,7 @@ def test_narrative_preparation_cannot_change_its_description_directly() -> None:
     original_description = "Borg hires mercenaries"
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),

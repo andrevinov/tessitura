@@ -8,6 +8,7 @@ from tessitura.application.narrative_assessment_execution_record import (
     NarrativeAssessmentExecutionRecord,
 )
 from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_intensity import NarrativeIntensity
 from tessitura.domain.narrative_intensity_and_pressure_assessment import (
     NarrativeIntensityAndPressureAssessment,
@@ -29,7 +30,10 @@ def test_execution_record_cannot_be_changed_after_creation() -> None:
         intention_id=UUID(int=3),
         trigger=EvaluationTriggerKind.TIME_THRESHOLD_REACHED,
         initial_context="World time advanced from minute 0 to minute 60.",
-        intention_direction="Borg seeks revenge against the player character",
+        intention_archetype=NarrativeArchetype(
+            name="The Tower",
+            description="A presumed safety collapses abruptly.",
+        ),
         previous_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(30),
             pressure=NarrativePressure(20),

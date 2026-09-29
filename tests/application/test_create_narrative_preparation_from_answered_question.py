@@ -18,6 +18,7 @@ from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -35,12 +36,17 @@ from tessitura.domain.narrative_preparation_creation_question import (
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 
+THE_TOWER = NarrativeArchetype(
+    name="The Tower",
+    description="A presumed safety collapses abruptly.",
+)
+
 
 def test_ineligible_intention_cannot_produce_narrative_preparation() -> None:
     minimum_pressure = MinimumNarrativePressureCondition(minimum=NarrativePressure(50))
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(30),
             pressure=NarrativePressure(20),
@@ -78,7 +84,7 @@ def test_reassessment_allows_narrative_preparation_creation() -> None:
     minimum_pressure = MinimumNarrativePressureCondition(minimum=NarrativePressure(50))
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(30),
             pressure=NarrativePressure(20),
@@ -142,7 +148,7 @@ def test_preparation_creation_rechecks_eligibility_after_question_request() -> N
     minimum_pressure = MinimumNarrativePressureCondition(minimum=NarrativePressure(50))
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(80),
             pressure=NarrativePressure(60),

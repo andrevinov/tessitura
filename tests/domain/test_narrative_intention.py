@@ -5,6 +5,7 @@ import pytest
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -15,6 +16,11 @@ from tessitura.domain.narrative_intensity_and_pressure_assessment import (
 from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
+
+THE_TOWER = NarrativeArchetype(
+    name="The Tower",
+    description="A presumed safety collapses abruptly.",
+)
 
 
 def test_narrative_intention_preserves_its_eligibility_configuration() -> None:
@@ -27,7 +33,7 @@ def test_narrative_intention_preserves_its_eligibility_configuration() -> None:
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(7),
@@ -73,7 +79,7 @@ def test_configuration_revision_preserves_identity_and_previous_values() -> None
     original_id = UUID(int=1)
     intention = NarrativeIntention(
         id=original_id,
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=original_assessment,
         eligibility_configuration=original_configuration,
     )
@@ -130,7 +136,7 @@ def test_invalid_configuration_revision_preserves_current_configuration(
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(3),
             pressure=NarrativePressure(7),
@@ -164,7 +170,7 @@ def test_narrative_intention_keeps_intensity_and_pressure_distinct() -> None:
 
     intention = NarrativeIntention(
         id=UUID(int=0),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -217,7 +223,7 @@ def test_invalid_reassessment_preserves_entire_current_assessment(
     )
     intention = NarrativeIntention(
         id=UUID(int=0),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -247,7 +253,7 @@ def test_narrative_intention_cannot_change_its_id() -> None:
     original_id = UUID(int=1)
     intention = NarrativeIntention(
         id=original_id,
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -268,31 +274,27 @@ def test_narrative_intention_cannot_change_its_id() -> None:
     assert intention.id == original_id
 
 
-def test_narrative_intention_rejects_blank_direction() -> None:
-    with pytest.raises(ValueError, match="direction cannot be blank"):
-        NarrativeIntention(
-            id=UUID(int=1),
-            direction="   ",
-            eligibility_configuration=NarrativeEligibilityConfiguration(
-                mandatory_conditions=(MinimumNarrativePressureCondition(),),
-                weighted_conditions=(),
-                minimum_score=0,
-            ),
-            current_assessment=NarrativeIntensityAndPressureAssessment(
-                intensity=NarrativeIntensity(2),
-                pressure=NarrativePressure(3),
-                justification=NarratorJustification(
-                    "A serious retaliation is warranted, but Borg needs time to prepare."
-                ),
-            ),
-        )
+@pytest.mark.parametrize(
+    ("name", "description", "error_message"),
+    [
+        ("   ", "A presumed safety collapses abruptly.", "name cannot be blank"),
+        ("The Tower", "   ", "description cannot be blank"),
+    ],
+)
+def test_narrative_archetype_rejects_blank_content(
+    name: str,
+    description: str,
+    error_message: str,
+) -> None:
+    with pytest.raises(ValueError, match=error_message):
+        NarrativeArchetype(name=name, description=description)
 
 
-def test_narrative_intention_cannot_change_its_direction_directly() -> None:
-    original_direction = "Borg seeks revenge"
+def test_narrative_intention_cannot_change_its_archetype_directly() -> None:
+    original_archetype = THE_TOWER
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction=original_direction,
+        archetype=original_archetype,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -308,18 +310,21 @@ def test_narrative_intention_cannot_change_its_direction_directly() -> None:
     )
 
     with pytest.raises(AttributeError):
-        intention.direction = (  # pyright: ignore[reportAttributeAccessIssue]
-            "Reveal the corruption beneath the city"
+        intention.archetype = (  # pyright: ignore[reportAttributeAccessIssue]
+            NarrativeArchetype(
+                name="Judgement",
+                description="The past returns and demands a response.",
+            )
         )
 
-    assert intention.direction == original_direction
+    assert intention.archetype is original_archetype
 
 
 def test_narrative_intention_cannot_replace_its_pressure_directly() -> None:
     original_pressure = NarrativePressure(3)
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -352,7 +357,7 @@ def test_narrative_intention_cannot_replace_its_current_assessment_directly() ->
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),
@@ -387,7 +392,7 @@ def test_narrative_intention_applies_reassessment() -> None:
     )
     intention = NarrativeIntention(
         id=original_id,
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
             weighted_conditions=(),

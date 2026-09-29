@@ -9,6 +9,7 @@ from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -23,6 +24,11 @@ from tessitura.domain.narrative_intention import NarrativeIntention
 from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 
+THE_TOWER = NarrativeArchetype(
+    name="The Tower",
+    description="A presumed safety collapses abruptly.",
+)
+
 
 def test_applies_answered_assessment_question_to_matching_intention() -> None:
     original_assessment = NarrativeIntensityAndPressureAssessment(
@@ -34,7 +40,7 @@ def test_applies_answered_assessment_question_to_matching_intention() -> None:
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=original_assessment,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
@@ -72,7 +78,7 @@ def test_rejects_unanswered_assessment_question_without_changing_intention() -> 
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=original_assessment,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
@@ -103,7 +109,7 @@ def test_rejects_assessment_question_for_another_intention() -> None:
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=original_assessment,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),

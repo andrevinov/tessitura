@@ -24,6 +24,7 @@ from tessitura.application.request_narrative_assessment_for_time_threshold impor
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -67,7 +68,10 @@ def test_openai_narrator_keeps_assessment_when_only_time_passes() -> None:
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge against the player character",
+        archetype=NarrativeArchetype(
+            name="The Tower",
+            description="A presumed safety collapses abruptly.",
+        ),
         current_assessment=previous_assessment,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
@@ -107,7 +111,7 @@ def test_openai_narrator_keeps_assessment_when_only_time_passes() -> None:
     assert execution_record.intention_id == intention.id
     assert execution_record.trigger is question.trigger
     assert execution_record.initial_context == question.initial_context
-    assert execution_record.intention_direction == intention.direction
+    assert execution_record.intention_archetype is intention.archetype
     assert execution_record.previous_assessment is previous_assessment
     assert execution_record.provider_response_id
     assert execution_record.raw_response
@@ -128,12 +132,16 @@ def test_openai_narrator_keeps_assessment_when_only_time_passes() -> None:
         log_path.read_text(encoding="utf-8").splitlines()[-1]
     )
 
-    assert persisted_execution["record_schema_version"] == 1
+    assert persisted_execution["record_schema_version"] == 2
     assert persisted_execution["execution_id"] == str(execution_record.execution_id)
     assert persisted_execution["narrative_engine_version"] == "0.1.0"
     assert persisted_execution["provider_response_id"] == (
         execution_record.provider_response_id
     )
+    assert persisted_execution["intention_archetype"] == {
+        "name": intention.archetype.name,
+        "description": intention.archetype.description,
+    }
 
     apply_answered_narrative_assessment_question(intention, question)
 

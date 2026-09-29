@@ -13,6 +13,7 @@ from tessitura.domain.evaluation_trigger_kind import EvaluationTriggerKind
 from tessitura.domain.minimum_narrative_pressure_condition import (
     MinimumNarrativePressureCondition,
 )
+from tessitura.domain.narrative_archetype import NarrativeArchetype
 from tessitura.domain.narrative_eligibility_configuration import (
     NarrativeEligibilityConfiguration,
 )
@@ -25,6 +26,11 @@ from tessitura.domain.narrative_pressure import NarrativePressure
 from tessitura.domain.narrator_justification import NarratorJustification
 from tessitura.domain.world_state import WorldState
 
+THE_TOWER = NarrativeArchetype(
+    name="The Tower",
+    description="A presumed safety collapses abruptly.",
+)
+
 
 def test_reassessment_can_make_narrative_intention_eligible() -> None:
     original_assessment = NarrativeIntensityAndPressureAssessment(
@@ -36,7 +42,7 @@ def test_reassessment_can_make_narrative_intention_eligible() -> None:
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=original_assessment,
         eligibility_configuration=NarrativeEligibilityConfiguration(
             mandatory_conditions=(MinimumNarrativePressureCondition(),),
@@ -97,7 +103,7 @@ def test_reassessment_can_make_narrative_intention_eligible() -> None:
 def test_unsatisfied_mandatory_condition_blocks_narrative_intention() -> None:
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(80),
             pressure=NarrativePressure(60),
@@ -124,7 +130,7 @@ def test_only_satisfied_weighted_conditions_contribute_to_eligibility() -> None:
     unsatisfied_condition = MinimumNarrativePressureCondition(NarrativePressure(70))
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=NarrativeIntensityAndPressureAssessment(
             intensity=NarrativeIntensity(80),
             pressure=NarrativePressure(60),
@@ -162,7 +168,7 @@ def test_repeated_eligibility_evaluation_is_deterministic_and_non_mutating() -> 
     )
     intention = NarrativeIntention(
         id=UUID(int=1),
-        direction="Borg seeks revenge",
+        archetype=THE_TOWER,
         current_assessment=assessment,
         eligibility_configuration=configuration,
     )

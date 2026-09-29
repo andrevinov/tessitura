@@ -12,7 +12,7 @@ class JsonLinesNarrativeAssessmentExecutionRecorder:
 
     def record(self, execution: NarrativeAssessmentExecutionRecord) -> None:
         serialized_execution = {
-            "record_schema_version": 1,
+            "record_schema_version": 2,
             "execution_id": str(execution.execution_id),
             "narrative_engine_version": execution.narrative_engine_version,
             "completed_at": execution.completed_at.isoformat(),
@@ -24,7 +24,10 @@ class JsonLinesNarrativeAssessmentExecutionRecorder:
             "intention_id": str(execution.intention_id),
             "trigger": execution.trigger.value,
             "initial_context": execution.initial_context,
-            "intention_direction": execution.intention_direction,
+            "intention_archetype": {
+                "name": execution.intention_archetype.name,
+                "description": execution.intention_archetype.description,
+            },
             "previous_assessment": {
                 "intensity": execution.previous_assessment.intensity.value,
                 "pressure": execution.previous_assessment.pressure.value,
