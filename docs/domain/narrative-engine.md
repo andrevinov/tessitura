@@ -30,7 +30,7 @@ Os Value Objects envolvidos não se tornam, por isso, proprietários de questõe
 
 ### Limites da implementação atual
 
-Ainda não existem geração automática geral de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas, DTO serializado com `kind` nem adaptador que apresente questões ao Narrador. O único disparo derivado do Estado do Mundo implementado é a solicitação explícita de uma questão quando um avanço de tempo cruza um limite. Na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`; na questão de criação, ela permanece ao lado da descrição proposta.
+Ainda não existem geração automática geral de questões, recuperação progressiva de contexto L2/L3, coordenação de questões encadeadas, DTO serializado com `kind` nem adaptador geral capaz de apresentar diferentes tipos de questão. Existem adaptadores OpenAI específicos para avaliação de Intensidade e Pressão e para proposta de Preparação. O único disparo derivado do Estado do Mundo implementado é a solicitação explícita de uma questão quando um avanço de tempo cruza um limite. Na questão de avaliação, a justificativa compõe o Assessment mantido em `answer`; na questão de criação, ela permanece ao lado da descrição proposta.
 
 ## Estágios de compromisso narrativo
 
@@ -265,7 +265,13 @@ Uma questão respondida não supera uma falha de elegibilidade. O teste funciona
 
 A descrição permanece uma proposta: o registro não responde à questão, não reavalia a elegibilidade e não cria uma `NarrativePreparation`. Essas responsabilidades continuam separadas para que a decisão externa possa ser auditada antes de sua aplicação pelos casos de uso existentes.
 
-O registro é uma `dataclass` congelada, e seu teste impede a substituição de campos depois da construção. Ainda não existem contrato de Narrador, adaptador externo nem recorder JSONL para essa execução; portanto, nenhuma parte do fluxo atual instancia ou persiste esse registro.
+`NarrativePreparationCreationNarrator` é o contrato de aplicação que recebe a questão e a Intenção e devolve esse registro por meio de `propose()`. `answer_narrative_preparation_creation_question_with_narrator()` verifica que a questão pertence à Intenção, solicita a proposta e usa sua descrição e justificativa para responder à questão. O caso de uso devolve o mesmo registro e não cria a Preparação.
+
+`OpenAINarrativePreparationCreationNarrator` implementa esse contrato com a Responses API. Ele apresenta contexto inicial, Arquétipo e Assessment vigente, exige uma resposta estruturada com descrição e justificativa e orienta o modelo a propor uma possibilidade futura, sem afirmá-la como fato canônico ou acontecimento concluído. A resposta é convertida em um `NarratorJustification` e reunida aos metadados da execução.
+
+`JsonLinesNarrativePreparationCreationExecutionRecorder` serializa cada registro no schema de versão 1 e acrescenta uma linha ao arquivo recebido. O recorder preserva separadamente o contexto, o Assessment vigente, a proposta, a justificativa, a resposta externa e os dados de observabilidade. Ele não participa da criação da Preparação.
+
+O registro é uma `dataclass` congelada, e seu teste impede a substituição de campos depois da construção. O live test implementado começa com uma Intenção elegível, solicita e responde à questão por meio da OpenAI, persiste o registro e cria uma `NarrativePreparation` com a mesma descrição e justificativa. Esse teste protege o caminho estrutural real, mas ainda não atribui uma nota automática à qualidade semântica da proposta.
 
 ### Oportunidade Narrativa
 

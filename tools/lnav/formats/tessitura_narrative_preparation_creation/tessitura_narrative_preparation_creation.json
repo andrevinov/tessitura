@@ -1,0 +1,172 @@
+{
+  "$schema": "https://lnav.org/schemas/format-v1.schema.json",
+  "tessitura_narrative_preparation_creation": {
+    "title": "Tessitura Narrative Preparation Creation",
+    "description": "Executions that propose Tessitura narrative preparations.",
+    "file-type": "json",
+    "file-pattern": "narrative-preparation-creations\\.jsonl$",
+    "hide-extra": true,
+    "timestamp-field": "completed_at",
+    "timestamp-format": [
+      "%Y-%m-%dT%H:%M:%S.%f%z",
+      "%Y-%m-%dT%H:%M:%S%z"
+    ],
+    "convert-to-local-time": true,
+    "ordered-by-time": true,
+    "timestamp-point-of-reference": "end",
+    "duration-field": "duration_milliseconds",
+    "duration-divisor": 1000,
+    "opid-field": "execution_id",
+    "line-format": [
+      {
+        "field": "__timestamp__",
+        "timestamp-format": "%Y-%m-%d %H:%M:%S"
+      },
+      "  ",
+      {
+        "field": "intention_archetype/name",
+        "min-width": 12,
+        "max-width": 18,
+        "overflow": "dot-dot"
+      },
+      "  I ",
+      {
+        "field": "current_assessment/intensity",
+        "min-width": 3,
+        "align": "right"
+      },
+      "  P ",
+      {
+        "field": "current_assessment/pressure",
+        "min-width": 3,
+        "align": "right"
+      },
+      "  “",
+      {
+        "field": "proposed_description",
+        "min-width": 24,
+        "max-width": 48,
+        "overflow": "dot-dot"
+      },
+      "”  ",
+      {
+        "field": "__duration__"
+      },
+      "  ↓",
+      {
+        "field": "input_tokens"
+      },
+      " ↑",
+      {
+        "field": "output_tokens"
+      },
+      "  ",
+      {
+        "field": "model",
+        "max-width": 20,
+        "overflow": "last-word"
+      },
+      "  #",
+      {
+        "field": "execution_id",
+        "max-width": 8,
+        "overflow": "truncate"
+      }
+    ],
+    "value": {
+      "record_schema_version": {
+        "kind": "integer",
+        "hidden": true
+      },
+      "execution_id": {
+        "kind": "string",
+        "identifier": true
+      },
+      "narrative_engine_version": {
+        "kind": "string",
+        "hidden": true
+      },
+      "completed_at": {
+        "kind": "timestamp",
+        "hidden": true
+      },
+      "duration_milliseconds": {
+        "kind": "integer"
+      },
+      "provider": {
+        "kind": "string",
+        "hidden": true
+      },
+      "model": {
+        "kind": "string",
+        "identifier": true
+      },
+      "instructions": {
+        "kind": "string",
+        "hidden": true
+      },
+      "question_id": {
+        "kind": "string",
+        "identifier": true,
+        "hidden": true
+      },
+      "intention_id": {
+        "kind": "string",
+        "identifier": true,
+        "hidden": true
+      },
+      "initial_context": {
+        "kind": "string",
+        "hidden": true
+      },
+      "intention_archetype": {
+        "kind": "json",
+        "hidden": true
+      },
+      "intention_archetype/name": {
+        "kind": "string",
+        "identifier": true
+      },
+      "intention_archetype/description": {
+        "kind": "string",
+        "hidden": true
+      },
+      "current_assessment": {
+        "kind": "json",
+        "hidden": true
+      },
+      "current_assessment/intensity": {
+        "kind": "integer"
+      },
+      "current_assessment/pressure": {
+        "kind": "integer"
+      },
+      "current_assessment/justification": {
+        "kind": "string",
+        "hidden": true
+      },
+      "provider_response_id": {
+        "kind": "string",
+        "identifier": true,
+        "hidden": true
+      },
+      "raw_response": {
+        "kind": "json",
+        "hidden": true
+      },
+      "proposed_description": {
+        "kind": "string"
+      },
+      "justification": {
+        "kind": "string",
+        "hidden": true
+      },
+      "input_tokens": {
+        "kind": "integer"
+      },
+      "output_tokens": {
+        "kind": "integer"
+      }
+    }
+  }
+}
