@@ -16,6 +16,8 @@ class JsonLinesNarrativePreparationCreationExecutionRecorder:
     ) -> None:
         serialized_execution = {
             "record_schema_version": 1,
+            "proposed_description": execution.proposed_description,
+            "justification": execution.justification.text,
             "execution_id": str(execution.execution_id),
             "narrative_engine_version": execution.narrative_engine_version,
             "completed_at": execution.completed_at.isoformat(),
@@ -37,8 +39,6 @@ class JsonLinesNarrativePreparationCreationExecutionRecorder:
             },
             "provider_response_id": execution.provider_response_id,
             "raw_response": execution.raw_response,
-            "proposed_description": execution.proposed_description,
-            "justification": execution.justification.text,
             "input_tokens": execution.input_tokens,
             "output_tokens": execution.output_tokens,
         }
