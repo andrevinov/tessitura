@@ -22,7 +22,39 @@
         "field": "__timestamp__",
         "timestamp-format": "%Y-%m-%d %H:%M:%S"
       },
+      "  ASSESSMENT   ",
+      {
+        "field": "__duration__",
+        "min-width": 9,
+        "align": "right"
+      },
+      "  ↓",
+      {
+        "field": "input_tokens",
+        "min-width": 4,
+        "align": "right"
+      },
+      " ↑",
+      {
+        "field": "output_tokens",
+        "min-width": 4,
+        "align": "right"
+      },
       "  ",
+      {
+        "field": "model",
+        "min-width": 20,
+        "max-width": 20,
+        "overflow": "last-word"
+      },
+      "  #",
+      {
+        "field": "execution_id",
+        "min-width": 8,
+        "max-width": 8,
+        "overflow": "truncate"
+      },
+      "  │  ",
       {
         "field": "intention_archetype/name",
         "min-width": 12,
@@ -59,30 +91,6 @@
         "field": "resulting_assessment/pressure",
         "min-width": 3,
         "align": "right"
-      },
-      "  ",
-      {
-        "field": "__duration__"
-      },
-      "  ↓",
-      {
-        "field": "input_tokens"
-      },
-      " ↑",
-      {
-        "field": "output_tokens"
-      },
-      "  ",
-      {
-        "field": "model",
-        "max-width": 20,
-        "overflow": "last-word"
-      },
-      "  #",
-      {
-        "field": "execution_id",
-        "max-width": 8,
-        "overflow": "truncate"
       }
     ],
     "value": {
